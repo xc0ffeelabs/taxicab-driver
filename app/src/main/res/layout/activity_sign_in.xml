@@ -1,0 +1,77 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".RegistrationActivity">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleTextColor="@android:color/black"
+            android:title="@string/app_name"
+            android:background="?attr/colorPrimary">
+        </android.support.v7.widget.Toolbar>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:hint="@string/email_address"
+            android:id="@+id/user_email"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/toolbar"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:hint="@string/password"
+            android:id="@+id/user_passwd"
+            android:layout_below="@+id/user_email"
+            android:layout_alignLeft="@+id/user_email"
+            android:layout_alignStart="@+id/user_email" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signin"
+            android:id="@+id/btn_signin"
+            android:layout_marginTop="25dp"
+            android:layout_alignStart="@id/user_email"
+            android:layout_alignLeft="@id/user_email"
+            android:layout_below="@+id/user_passwd"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup"
+            android:id="@+id/btn_signup"
+            android:layout_below="@+id/user_passwd"
+            android:layout_alignEnd="@id/user_email"
+            android:layout_alignRight="@id/user_email"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/progress_bar"
+        android:id="@+id/pb_loading"
+        android:visibility="gone"/>
+
+</FrameLayout>

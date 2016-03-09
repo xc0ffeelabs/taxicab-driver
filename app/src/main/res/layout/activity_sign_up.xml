@@ -1,0 +1,128 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".RegistrationActivity">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleTextColor="@android:color/black"
+            android:title="@string/register"
+            android:background="?attr/colorPrimary">
+        </android.support.v7.widget.Toolbar>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/name"
+            android:ems="15"
+            android:id="@+id/user_name"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="23dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/toolbar"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="15"
+            android:id="@+id/user_phone"
+            android:hint="@string/phone_number"
+            android:layout_below="@+id/user_name"
+            android:layout_alignLeft="@+id/user_name"
+            android:layout_alignStart="@+id/user_name" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="15"
+            android:hint="@string/email_address"
+            android:id="@+id/user_email"
+            android:layout_below="@+id/user_phone"
+            android:layout_alignLeft="@+id/user_phone"
+            android:layout_alignStart="@+id/user_phone" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="15"
+            android:hint="@string/password"
+            android:id="@+id/user_passwd"
+            android:layout_below="@+id/user_email"
+            android:layout_alignLeft="@+id/user_email"
+            android:layout_alignStart="@+id/user_email" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="15"
+            android:hint="@string/confirm_password"
+            android:id="@+id/user_conf_password"
+            android:layout_below="@+id/user_passwd"
+            android:layout_alignLeft="@+id/user_passwd"
+            android:layout_alignStart="@+id/user_passwd" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="15"
+            android:hint="@string/license_no"
+            android:id="@+id/et_license"
+            android:layout_below="@+id/user_conf_password"
+            android:layout_alignLeft="@+id/user_passwd"
+            android:layout_alignStart="@+id/user_passwd" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="15"
+            android:hint="@string/car_model"
+            android:id="@+id/et_carmodel"
+            android:layout_below="@+id/et_license"
+            android:layout_alignLeft="@+id/user_passwd"
+            android:layout_alignStart="@+id/user_passwd" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/car_license_plate"
+            android:ems="15"
+            android:id="@+id/et_carnumber"
+            android:layout_below="@+id/et_carmodel"
+            android:layout_alignLeft="@+id/user_passwd"
+            android:layout_alignStart="@+id/user_passwd" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup"
+            android:id="@+id/btn_signup"
+            android:layout_below="@+id/et_carnumber"
+            android:layout_alignLeft="@+id/user_conf_password"
+            android:layout_alignStart="@+id/user_conf_password"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/rounded_button"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+    <include layout="@layout/progress_bar"
+        android:id="@+id/pb_loading"
+        android:visibility="gone"/>
+
+</FrameLayout>

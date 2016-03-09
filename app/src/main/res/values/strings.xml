@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">TaxiCabDriver</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="signin">Sign In</string>
+    <string name="signup">Sign Up</string>
+    <string name="email_invalid">Invalid email, please check the email address</string>
+    <string name="login_fail">Invalid driver name or password. Please try again</string>
+    <string name="no_network_title">No network!</string>
+    <string name="no_network_msg">You are not connected to internet. Please connect to internet and try again</string>
+    <string name="text_ok">OK</string>
+    <string name="name">Your name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="register">Register</string>
+    <string name="required_fields">All fields are required</string>
+    <string name="passwd_mismatch">Passwords do not match</string>
+    <string name="license_no">License Number</string>
+    <string name="car_model">Car model</string>
+    <string name="car_license_plate">Car license plate number</string>
 </resources>
