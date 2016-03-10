@@ -105,6 +105,8 @@ public class TaxiCabDriver extends AppCompatActivity {
 
     private void loggedIn() {
         // Launch map activity here
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        startActivity(mapIntent);
     }
 
     private void loginFailed() {

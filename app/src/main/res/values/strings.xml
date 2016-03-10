@@ -18,4 +18,6 @@
     <string name="license_no">License Number</string>
     <string name="car_model">Car model</string>
     <string name="car_license_plate">Car license plate number</string>
+    <string name="drStatusAvl">Available</string>
+    <string name="drStatus">DriverStatus</string>
 </resources>

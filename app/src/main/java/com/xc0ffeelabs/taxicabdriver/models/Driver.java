@@ -12,6 +12,7 @@ public class Driver extends ParseUser {
     private static final String LICENSE = "license";
     private static final String CAR_MODEL = "carModel";
     private static final String CAR_NUMBER = "carNumber";
+    public static final String CURRENT_LOCATION = "currentLocation";
 
     public Driver() {
     }
@@ -67,4 +68,5 @@ public class Driver extends ParseUser {
     public String getCarNumber() {
         return getString(CAR_NUMBER);
     }
+
 }
