@@ -32,6 +32,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.services.DriverStateManager;
 import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
 import com.xc0ffeelabs.taxicabdriver.services.LocationBoradcastReceiver;
 import com.xc0ffeelabs.taxicabdriver.templates.ILocationListener;
@@ -53,6 +54,7 @@ public class MapActivity extends AppCompatActivity implements
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
     private GPSTracker gpst;
+    private ParseUser user;
 
     /*
      * Define a request code to send to Google Play services This code is
@@ -76,6 +78,10 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
+
+        gpst = new GPSTracker(this, this);
+
+        user = ParseUser.getCurrentUser();
 
         scheduleLocationUpdates();
 
@@ -202,7 +208,7 @@ public class MapActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
-        startLocationUpdates();
+//        startLocationUpdates();
     }
 
     protected void startLocationUpdates() {
@@ -306,19 +312,22 @@ public class MapActivity extends AppCompatActivity implements
 //
 //
 //
+        if (user == null)
+            user  = ParseUser.getCurrentUser();
+        if (user != null && !(user.getString(Driver.STATE)).equals(DriverStateManager.DRIVER_STATES.INACTIVE)) {
+            gpst.startLocationTracking();
+        }
 
-
-
-        gpst = new GPSTracker(this, this);
     }
 
-//    public void cancelAlarm() {
+    public void cancelAlarm() {
 //        Intent intent = new Intent(getApplicationContext(), LocationBoradcastReceiver.class);
 //        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationBoradcastReceiver.REQUEST_CODE,
 //                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 //        alarm.cancel(pIntent);
-//    }
+        gpst.stopLocationTracking();
+    }
 
     @Override
     public void updateLocation(Location location) {
@@ -337,7 +346,8 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void uploadDriverLocation(Double latitude, Double longitude) {
-        ParseUser user = ParseUser.getCurrentUser();
+        if (user == null)
+             user  = ParseUser.getCurrentUser();
         if (user != null) {
             user.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
             user.saveInBackground();
