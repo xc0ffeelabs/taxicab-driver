@@ -3,6 +3,7 @@ package com.xc0ffeelabs.taxicabdriver.activities;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.interceptors.ParseLogInterceptor;
 import com.securepreferences.SecurePreferences;
@@ -41,6 +42,7 @@ public class TaxiDriverApplication extends Application {
                 .applicationId(APP_ID) // should correspond to APP_ID env variable
                 .addNetworkInterceptor(new ParseLogInterceptor())
                 .server(PARSE_URL).build());
+        ParseInstallation.getCurrentInstallation().saveInBackground();
     }
 
     public SecurePreferences getSecureSharedPreferences() {

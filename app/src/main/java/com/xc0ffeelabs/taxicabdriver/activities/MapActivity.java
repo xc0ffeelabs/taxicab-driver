@@ -2,10 +2,7 @@ package com.xc0ffeelabs.taxicabdriver.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
@@ -13,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,15 +25,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.Parse;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.services.DriverStateManager;
+import com.xc0ffeelabs.taxicabdriver.services.DriverStates;
 import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
-import com.xc0ffeelabs.taxicabdriver.services.LocationBoradcastReceiver;
 import com.xc0ffeelabs.taxicabdriver.templates.ILocationListener;
+
+import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -82,8 +81,14 @@ public class MapActivity extends AppCompatActivity implements
         gpst = new GPSTracker(this, this);
 
         user = ParseUser.getCurrentUser();
+        if (user.getString(Driver.STATE) == null) {
+            user.put(Driver.STATE, DriverStates.INACTIVE);
+            user.saveInBackground();
+        }
 
         scheduleLocationUpdates();
+
+        manageDriverActionButtons(user.getString(Driver.STATE));
 
     }
 
@@ -271,6 +276,7 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
 
@@ -314,20 +320,22 @@ public class MapActivity extends AppCompatActivity implements
 //
         if (user == null)
             user  = ParseUser.getCurrentUser();
-        if (user != null && !(user.getString(Driver.STATE)).equals(DriverStateManager.DRIVER_STATES.INACTIVE)) {
+        if (user != null && user.getString(Driver.STATE) != null && !(user.getString(Driver.STATE)).equals(DriverStates.INACTIVE)) {
+            //dont track the location in INACTIVE state
             gpst.startLocationTracking();
+        } else {
+            gpst.stopLocationTracking();
         }
 
     }
 
-    public void cancelAlarm() {
+//    public void cancelAlarm() {
 //        Intent intent = new Intent(getApplicationContext(), LocationBoradcastReceiver.class);
 //        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationBoradcastReceiver.REQUEST_CODE,
 //                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 //        alarm.cancel(pIntent);
-        gpst.stopLocationTracking();
-    }
+//    }
 
     @Override
     public void updateLocation(Location location) {
@@ -337,7 +345,7 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void updateLongitude(Double lang) {
-        Log.i("Location", "Longitude: " + lang );
+        Log.i("Location", "Longitude: " + lang);
     }
 
     @Override
@@ -352,5 +360,102 @@ public class MapActivity extends AppCompatActivity implements
             user.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
             user.saveInBackground();
         }
+    }
+
+    private void manageDriverActionButtons(String currentState) {
+        List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState);
+        for (int i = 0; i < nextStates.size(); i++) {
+            int id = -1;
+            switch (nextStates.get(i)){
+                case DriverStates.INACTIVE:
+                    id = R.id.inactiveBtn;
+                    break;
+                case DriverStates.ACTIVE:
+                    id = R.id.activeBtn;
+                    break;
+                case DriverStates.GOING_TO_PICKUP:
+                    id = R.id.goingPickupBtn;
+                    break;
+                case DriverStates.REACHED_CUSTOMER:
+                    id = R.id.reachedCustomerBtn;
+                    break;
+                case DriverStates.PICKEDUP_CUSTOMER:
+                    id = R.id.pickedupCustomerBtn;
+                    break;
+                case DriverStates.GOING_TO_DESTINATION:
+                    id = R.id.goignDestinationBtn;
+                case DriverStates.REACHED_DESTINATION:
+                    id = R.id.reachedDestinationBtn;
+                    break;
+                default:
+                    break;
+
+            }
+            if (id != -1) {
+//                Button btn = (Button)findViewById(id);
+//                btn.setVisibility(View.VISIBLE);
+                toggleOtherButtons(id);
+            }
+        }
+        if (currentState.equals(DriverStates.ACTIVE) || currentState.equals(DriverStates.INACTIVE)) {
+            //hide cancel button
+            findViewById(R.id.cancelTripBtn).setVisibility(View.GONE);
+        } else {
+            //show cancel button
+            findViewById(R.id.cancelTripBtn).setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public void goActive(View view) {
+        user.put(Driver.STATE, DriverStates.ACTIVE);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.ACTIVE);
+    }
+
+    public void goInactive(View view) {
+        user.put(Driver.STATE, DriverStates.INACTIVE);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.INACTIVE);
+    }
+
+    public void goPickupCustomer(View view) {
+        user.put(Driver.STATE, DriverStates.GOING_TO_PICKUP);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.GOING_TO_PICKUP);
+    }
+
+    public void reachedCustomer(View view) {
+        user.put(Driver.STATE, DriverStates.REACHED_CUSTOMER);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.REACHED_CUSTOMER);
+    }
+
+    public void pickedupCustomer(View view) {
+        user.put(Driver.STATE, DriverStates.PICKEDUP_CUSTOMER);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.PICKEDUP_CUSTOMER);
+    }
+
+    public void goingDestination(View view) {
+        user.put(Driver.STATE, DriverStates.GOING_TO_DESTINATION);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.GOING_TO_DESTINATION);
+    }
+
+    public void reachedDestination(View view) {
+        user.put(Driver.STATE, DriverStates.REACHED_DESTINATION);
+        user.saveInBackground();
+        manageDriverActionButtons(DriverStates.REACHED_DESTINATION);
+    }
+
+    private void toggleOtherButtons(int id) {
+        int btns[] = {R.id.activeBtn, R.id.inactiveBtn, R.id.goingPickupBtn, R.id.reachedCustomerBtn, R.id.pickedupCustomerBtn, R.id.goignDestinationBtn, R.id.reachedDestinationBtn};
+        for (int i = 0; i < btns.length; i++) {
+            if (btns[i] != id) {
+                findViewById(btns[i]).setVisibility(View.GONE);
+            }
+        }
+        findViewById(id).setVisibility(View.VISIBLE);
     }
 }

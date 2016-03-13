@@ -19,10 +19,7 @@
             android:gravity="right"
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drStatusAvl"/>
+            <include layout="@layout/driver_state_transition_buttons"/>
         </android.support.v7.widget.ActionMenuView>
 
     </android.support.v7.widget.Toolbar>

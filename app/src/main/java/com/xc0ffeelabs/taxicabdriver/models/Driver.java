@@ -13,6 +13,7 @@ public class Driver extends ParseUser {
     private static final String CAR_MODEL = "carModel";
     private static final String CAR_NUMBER = "carNumber";
     public static final String CURRENT_LOCATION = "currentLocation";
+    public static final String CURRENT_TRIP_ID = "currentTripId";
     public static final String STATE = "state";
 
 
