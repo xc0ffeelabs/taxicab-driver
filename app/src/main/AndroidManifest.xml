@@ -61,14 +61,6 @@
             android:name=".services.LocationService"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.parse.APPLICATION_ID"
-            android:value="APPLICATION ID" />
-        <meta-data
-            android:name="com.parse.CLIENT_KEY"
-            android:value="CLIENT KEY" />
-
-
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false">
@@ -90,6 +82,17 @@
                 <category android:name="com.xc0ffeelabs.taxicabdriver" />
             </intent-filter>
         </receiver>
+
+        <!--<meta-data-->
+            <!--android:name="com.parse.APPLICATION_ID"-->
+            <!--android:value="APPLICATION ID" />-->
+        <!--<meta-data-->
+            <!--android:name="com.parse.CLIENT_KEY"-->
+            <!--android:value="CLIENT KEY" />-->
+
+
     </application>
+
+
 
 </manifest>
