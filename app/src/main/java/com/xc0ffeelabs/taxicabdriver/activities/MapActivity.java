@@ -26,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
@@ -81,14 +82,21 @@ public class MapActivity extends AppCompatActivity implements
         gpst = new GPSTracker(this, this);
 
         user = ParseUser.getCurrentUser();
-        if (user.getString(Driver.STATE) == null) {
+        if (user != null && user.getString(Driver.STATE) == null) {
             user.put(Driver.STATE, DriverStates.INACTIVE);
             user.saveInBackground();
+        } else if (user == null) {
+            Toast.makeText(this, "Error - You didn't login. Please signup with GoTaxi.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         scheduleLocationUpdates();
 
+        setupPushnotifications();
+
         manageDriverActionButtons(user.getString(Driver.STATE));
+
+
 
     }
 
@@ -457,5 +465,13 @@ public class MapActivity extends AppCompatActivity implements
             }
         }
         findViewById(id).setVisibility(View.VISIBLE);
+    }
+
+    private void setupPushnotifications() {
+        if (user != null) {
+            ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+            installation.put("ownerId", user.getObjectId());
+            installation.saveInBackground();
+        }
     }
 }

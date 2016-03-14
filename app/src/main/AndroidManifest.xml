@@ -51,7 +51,7 @@
 
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
-            android:value="id:956242433297"/>
+            android:value="id:960181148606"/>
         <receiver
             android:name=".services.LocationBoradcastReceiver"
             android:process=":remote" >
@@ -62,7 +62,7 @@
             android:exported="false" />
 
         <service android:name="com.parse.PushService" />
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+        <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -76,19 +76,9 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <!--
-                  IMPORTANT: Change "com.parse.starter" to match your app's package name.
-                -->
                 <category android:name="com.xc0ffeelabs.taxicabdriver" />
             </intent-filter>
         </receiver>
-
-        <!--<meta-data-->
-            <!--android:name="com.parse.APPLICATION_ID"-->
-            <!--android:value="APPLICATION ID" />-->
-        <!--<meta-data-->
-            <!--android:name="com.parse.CLIENT_KEY"-->
-            <!--android:value="CLIENT KEY" />-->
 
 
     </application>
