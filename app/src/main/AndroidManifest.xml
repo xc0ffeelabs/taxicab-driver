@@ -93,7 +93,7 @@
                 <category android:name="com.xc0ffeelabs.taxicabdriver" />
             </intent-filter>
         </receiver>
-        
+
     </application>
 
 
