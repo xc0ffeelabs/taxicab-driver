@@ -20,4 +20,6 @@
     <string name="car_license_plate">Car license plate number</string>
     <string name="drStatusAvl">Available</string>
     <string name="drStatus">DriverStatus</string>
+    <string name="lbltitle">Title</string>
+    <string name="lbltext">Text</string>
 </resources>

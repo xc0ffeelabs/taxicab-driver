@@ -29,7 +29,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:design:23.2.0'
-    compile 'com.parse.bolts:bolts-android:1.+'
+    compile 'com.parse.bolts:bolts-android:1.4.0'
     compile 'com.parse:parse-android:1.13.0'
     compile 'com.parse:parseinterceptors:0.0.2'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.2.0'
