@@ -553,6 +553,7 @@ public class MapActivity extends AppCompatActivity implements
         trip.put(Driver.STATE, TripStates.REACHED_DESTINATION);
         trip.saveInBackground();
         driver.put(Driver.STATE, DriverStates.ACTIVE);
+        driver.put("driver_currentTripId", "");
         driver.saveInBackground();
         manageDriverActionButtons(DriverStates.ACTIVE, TripStates.REACHED_DESTINATION);
     }
@@ -561,6 +562,7 @@ public class MapActivity extends AppCompatActivity implements
         trip.put(Driver.STATE, TripStates.TRIP_CANCEL);
         trip.saveInBackground();
         driver.put(Driver.STATE, DriverStates.ACTIVE);
+        driver.put("driver_currentTripId", "");
         driver.saveInBackground();
         manageDriverActionButtons(DriverStates.ACTIVE, TripStates.TRIP_CANCEL);
     }
