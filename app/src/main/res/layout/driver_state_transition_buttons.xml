@@ -80,6 +80,7 @@
         android:text="Cancel Trip"
         android:layout_toRightOf="@id/reachedDestinationBtn"
         android:onClick="cancelTrip"
+        android:layout_alignParentRight="true"
         />
 
 </RelativeLayout>

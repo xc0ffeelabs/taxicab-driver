@@ -29,6 +29,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseInstallation;
@@ -44,7 +46,9 @@ import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
 import com.xc0ffeelabs.taxicabdriver.services.TripStates;
 import com.xc0ffeelabs.taxicabdriver.templates.ILocationListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -76,8 +80,15 @@ public class MapActivity extends AppCompatActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             driver = ParseUser.getCurrentUser();
+            ParseQuery tripQ = ParseQuery.getQuery("Trip");
+            try {
+                driver = driver.fetch();
+                trip = tripQ.get(driver.getString("driver_currentTripId"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             String tripState = trip != null? trip.getString(Driver.STATE) : null;
-            manageDriverActionButtons(DriverStates.IN_TRIP, tripState);
+            manageDriverActionButtons(driver.getString(Driver.STATE), tripState);
         }
     };
 
@@ -317,7 +328,7 @@ public class MapActivity extends AppCompatActivity implements
             }
         } else {
             Toast.makeText(getApplicationContext(),
-                    "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+                    "Sorry. Location services not available to you", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -418,29 +429,38 @@ public class MapActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
+        String toastMsg = "";
         List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState, tripState);
         for (int i = 0; i < nextStates.size(); i++) {
             int id = -1;
             switch (nextStates.get(i)){
                 case DriverStates.INACTIVE:
                     id = R.id.inactiveBtn;
+                    toastMsg = "You can Go Active";
                     break;
                 case DriverStates.ACTIVE:
                     id = R.id.activeBtn;
+                    toastMsg = "You are in queue for next trip.";
                     break;
                 case TripStates.GOING_TO_PICKUP:
                     id = R.id.goingPickupBtn;
+                    toastMsg = "Go, pick the customer";
                     break;
                 case TripStates.REACHED_CUSTOMER:
                     id = R.id.reachedCustomerBtn;
+                    toastMsg = "Go, pick the customer";
                     break;
                 case TripStates.PICKEDUP_CUSTOMER:
                     id = R.id.pickedupCustomerBtn;
+                    toastMsg = "Go, pick the customer";
                     break;
                 case TripStates.GOING_TO_DESTINATION:
                     id = R.id.goignDestinationBtn;
+                    toastMsg = "Start Driving to destination";
+                    break;
                 case TripStates.REACHED_DESTINATION:
                     id = R.id.reachedDestinationBtn;
+                    toastMsg = "You are in queue for next trip. Thanks.";
                     break;
                 default:
                     break;
@@ -451,6 +471,8 @@ public class MapActivity extends AppCompatActivity implements
 //                btn.setVisibility(View.VISIBLE);
                 toggleOtherButtons(id);
             }
+
+            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
         }
         if (currentState.equals(DriverStates.ACTIVE) || currentState.equals(DriverStates.INACTIVE)) {
             //hide cancel button
@@ -480,12 +502,39 @@ public class MapActivity extends AppCompatActivity implements
         trip.put(Driver.STATE, TripStates.GOING_TO_PICKUP);
         trip.saveInBackground();
         manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.GOING_TO_PICKUP);
+
     }
 
     public void reachedCustomer(View view) {
         trip.put(Driver.STATE, TripStates.REACHED_CUSTOMER);
         trip.saveInBackground();
         manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.REACHED_CUSTOMER);
+
+
+        Map parameters = new HashMap();
+        parameters.put("driverId", driver.getObjectId());
+        parameters.put("tripId", trip.getObjectId());
+
+
+        ParseCloud.callFunctionInBackground("driverReachedUser", parameters, new FunctionCallback() {
+            @Override
+            public void done(Object object, ParseException e) {
+                if (e == null) {
+                    Log.i("Success", "Driver assigned to the trip");
+                } else {
+                    Log.e("Error", "Driver not assigned to the trip");
+                }
+            }
+
+            @Override
+            public void done(Object o, Throwable throwable) {
+                if (throwable == null) {
+                    Log.i("Success", "Driver assigned to the trip");
+                } else {
+                    Log.e("Error", "Driver not assigned to the trip");
+                }
+            }
+        });
     }
 
     public void pickedupCustomer(View view) {
@@ -517,7 +566,7 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void toggleOtherButtons(int id) {
-        int btns[] = {R.id.activeBtn, R.id.inactiveBtn, R.id.goingPickupBtn, R.id.reachedCustomerBtn, R.id.pickedupCustomerBtn, R.id.goignDestinationBtn, R.id.reachedDestinationBtn};
+        int btns[] = {R.id.activeBtn, R.id.inactiveBtn, R.id.goingPickupBtn, R.id.reachedCustomerBtn, R.id.pickedupCustomerBtn, R.id.goignDestinationBtn, R.id.reachedDestinationBtn, R.id.cancelTripBtn};
         for (int i = 0; i < btns.length; i++) {
             if (btns[i] != id) {
                 findViewById(btns[i]).setVisibility(View.GONE);
