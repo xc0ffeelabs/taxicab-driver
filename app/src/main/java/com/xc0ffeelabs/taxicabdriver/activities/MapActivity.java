@@ -357,23 +357,8 @@ public class MapActivity extends AppCompatActivity implements
         }
     }
 
-    // Setup a recurring alarm every half hour
+
     public void scheduleLocationUpdates() {
-//        // Construct an intent that will execute the AlarmReceiver
-//        Intent intent = new Intent(getApplicationContext(), LocationBoradcastReceiver.class);
-//        // Create a PendingIntent to be triggered when the alarm goes off
-//        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationBoradcastReceiver.REQUEST_CODE,
-//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        // Setup periodic alarm every 5 seconds
-//        long firstMillis = System.currentTimeMillis(); // alarm is set right away
-//        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
-//        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
-//        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-//                1000 * 30, pIntent);
-//
-//
-//
         if (driver == null)
             driver = ParseUser.getCurrentUser();
         if (driver != null && driver.getString(Driver.STATE) != null && !(driver.getString(Driver.STATE)).equals(DriverStates.INACTIVE)) {
@@ -384,14 +369,6 @@ public class MapActivity extends AppCompatActivity implements
         }
 
     }
-
-//    public void cancelAlarm() {
-//        Intent intent = new Intent(getApplicationContext(), LocationBoradcastReceiver.class);
-//        final PendingIntent pIntent = PendingIntent.getBroadcast(this, LocationBoradcastReceiver.REQUEST_CODE,
-//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        alarm.cancel(pIntent);
-//    }
 
     @Override
     public void updateLocation(Location location) {
@@ -490,12 +467,14 @@ public class MapActivity extends AppCompatActivity implements
         driver.put(Driver.STATE, DriverStates.ACTIVE);
         driver.saveInBackground();
         manageDriverActionButtons(DriverStates.ACTIVE, null);
+        scheduleLocationUpdates();
     }
 
     public void goInactive(View view) {
         driver.put(Driver.STATE, DriverStates.INACTIVE);
         driver.saveInBackground();
         manageDriverActionButtons(DriverStates.INACTIVE, null);
+        scheduleLocationUpdates();
     }
 
     public void goPickupCustomer(View view) {
