@@ -7,9 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 
 import java.util.HashMap;
@@ -38,30 +37,30 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
                 parameters.put("driverId", driverId);
                 parameters.put("tripId", tripId);
 
-                ParseCloud.callFunctionInBackground("driverAcceptTrip", parameters, new FunctionCallback() {
-                    @Override
-                    public void done(Object object, ParseException e) {
-                        if (e == null) {
-                            Log.i("Success", "Driver assigned to the trip");
-                        } else {
-                            Log.e("Error", "Driver not assigned to the trip");
-                        }
-                    }
-
-                    @Override
-                    public void done(Object o, Throwable throwable) {
-                        if (throwable == null) {
-                            Log.i("Success", "Driver assigned to the trip");
-                        } else {
-                            Log.e("Error", "Driver not assigned to the trip");
-                        }
-                    }
-                });
-//                ParseQuery tripQ = ParseQuery.getQuery("Trip");
-//                ParseObject trip = tripQ.get(tripId);
-//                trip.put("status", "confirmed");
-//                trip.put("state", "driver-accepted-trip-request");
-//                trip.saveInBackground();
+//                ParseCloud.callFunctionInBackground("driverAcceptTrip", parameters, new FunctionCallback() {
+//                    @Override
+//                    public void done(Object object, ParseException e) {
+//                        if (e == null) {
+//                            Log.i("Success", "Driver assigned to the trip");
+//                        } else {
+//                            Log.e("Error", "Driver not assigned to the trip");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void done(Object o, Throwable throwable) {
+//                        if (throwable == null) {
+//                            Log.i("Success", "Driver assigned to the trip");
+//                        } else {
+//                            Log.e("Error", "Driver not assigned to the trip");
+//                        }
+//                    }
+//                });
+                ParseQuery tripQ = ParseQuery.getQuery("Trip");
+                ParseObject trip = tripQ.get(tripId);
+                trip.put("status", "confirmed");
+                trip.put("state", "driver-accepted-trip-request");
+                trip.saveInBackground();
 
                 Intent intentMap = new Intent(context, MapActivity.class);
                 intentMap.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -7,12 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * Created by skammila on 3/14/16.
@@ -34,34 +30,34 @@ public class DenyRequestReceiver extends BroadcastReceiver {
             try {
                 Log.d("Debug", "TripId "+ tripId);
 
-                Map parameters = new HashMap();
-                parameters.put("driverId", driverId);
-                parameters.put("tripId", tripId);
-
-                ParseCloud.callFunctionInBackground("driverDenyTrip", parameters, new FunctionCallback() {
-                    @Override
-                    public void done(Object object, ParseException e) {
-                        if (e == null) {
-                            Log.i("Success", "Driver assigned to the trip");
-                        } else {
-                            Log.e("Error", "Driver not assigned to the trip");
-                        }
-                    }
-
-                    @Override
-                    public void done(Object o, Throwable throwable) {
-                        if (throwable == null) {
-                            Log.i("Success", "Driver assigned to the trip");
-                        } else {
-                            Log.e("Error", "Driver not assigned to the trip");
-                        }
-                    }
-                });
-//                ParseQuery tripQ = ParseQuery.getQuery("Trip");
-//                ParseObject trip = tripQ.get(tripId);
-//                trip.put("status", "driver-notfound");
-//                trip.put("state", "driver-denied-trip-request");
-//                trip.saveInBackground();
+//                Map parameters = new HashMap();
+//                parameters.put("driverId", driverId);
+//                parameters.put("tripId", tripId);
+//
+//                ParseCloud.callFunctionInBackground("driverDenyTrip", parameters, new FunctionCallback() {
+//                    @Override
+//                    public void done(Object object, ParseException e) {
+//                        if (e == null) {
+//                            Log.i("Success", "Driver assigned to the trip");
+//                        } else {
+//                            Log.e("Error", "Driver not assigned to the trip");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void done(Object o, Throwable throwable) {
+//                        if (throwable == null) {
+//                            Log.i("Success", "Driver assigned to the trip");
+//                        } else {
+//                            Log.e("Error", "Driver not assigned to the trip");
+//                        }
+//                    }
+//                });
+                ParseQuery tripQ = ParseQuery.getQuery("Trip");
+                ParseObject trip = tripQ.get(tripId);
+                trip.put("status", "driver-notfound");
+                trip.put("state", "driver-denied-trip-request");
+                trip.saveInBackground();
             } catch (Exception e) {
                 e.printStackTrace();
             }
