@@ -79,7 +79,7 @@
         android:visibility="gone"
         android:text="Cancel Trip"
         android:layout_toRightOf="@id/reachedDestinationBtn"
-        android:onClick="reachedDestination"
+        android:onClick="cancelTrip"
         />
 
 </RelativeLayout>

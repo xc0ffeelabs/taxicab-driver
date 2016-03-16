@@ -23,8 +23,9 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
     public static final String intentAction = "com.parse.push.intent.RECEIVE";
 
-    private static final String ACCEPT_ACTION = "com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST";
-    private static final String DENY_ACTION = "com.xc0ffeelabs.taxicabdriver.DENY_REQUEST";
+    public static final String ACCEPT_ACTION = "com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST";
+    public static final String DENY_ACTION = "com.xc0ffeelabs.taxicabdriver.DENY_REQUEST";
+    public static final String ACCEPT_REQUEST_LAUNCH_MAP = "com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST_LAUNCH_MAP";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -121,7 +122,10 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
                 .addAction(R.drawable.thumb_down_sm, "Deny", pendingIntentDeny);
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+        Notification note = mBuilder.build();
+        note.flags |= Notification.FLAG_AUTO_CANCEL; // For Non cancellable notification
+        mNotificationManager.notify(NOTIFICATION_ID, note);
 //        }
     }
 

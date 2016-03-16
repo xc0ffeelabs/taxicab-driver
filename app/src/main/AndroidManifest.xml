@@ -52,14 +52,8 @@
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
             android:value="id:960181148606"/>
-        <receiver
-            android:name=".services.LocationBoradcastReceiver"
-            android:process=":remote" >
-        </receiver>
 
-        <service
-            android:name=".services.LocationService"
-            android:exported="false" />
+
 
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver"

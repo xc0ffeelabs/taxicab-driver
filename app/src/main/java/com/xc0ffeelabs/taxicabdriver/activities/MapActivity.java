@@ -3,11 +3,15 @@ package com.xc0ffeelabs.taxicabdriver.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,14 +29,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver;
 import com.xc0ffeelabs.taxicabdriver.services.DriverStateManager;
 import com.xc0ffeelabs.taxicabdriver.services.DriverStates;
 import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
+import com.xc0ffeelabs.taxicabdriver.services.TripStates;
 import com.xc0ffeelabs.taxicabdriver.templates.ILocationListener;
 
 import java.util.List;
@@ -54,13 +63,23 @@ public class MapActivity extends AppCompatActivity implements
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
     private GPSTracker gpst;
-    private ParseUser user;
+    private ParseUser driver;
+    private ParseObject trip;
 
     /*
      * Define a request code to send to Google Play services This code is
      * returned in Activity.onActivityResult
      */
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            driver = ParseUser.getCurrentUser();
+            String tripState = trip != null? trip.getString(Driver.STATE) : null;
+            manageDriverActionButtons(DriverStates.IN_TRIP, tripState);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +100,11 @@ public class MapActivity extends AppCompatActivity implements
 
         gpst = new GPSTracker(this, this);
 
-        user = ParseUser.getCurrentUser();
-        if (user != null && user.getString(Driver.STATE) == null) {
-            user.put(Driver.STATE, DriverStates.INACTIVE);
-            user.saveInBackground();
-        } else if (user == null) {
+        driver = ParseUser.getCurrentUser();
+        if (driver != null && driver.getString(Driver.STATE) == null) {
+            driver.put(Driver.STATE, DriverStates.INACTIVE);
+            driver.saveInBackground();
+        } else if (driver == null) {
             Toast.makeText(this, "Error - You didn't login. Please signup with GoTaxi.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -94,9 +113,10 @@ public class MapActivity extends AppCompatActivity implements
 
         setupPushnotifications();
 
-        manageDriverActionButtons(user.getString(Driver.STATE));
+        manageDriverActionButtons(driver.getString(Driver.STATE), null);
 
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                new IntentFilter());
 
     }
 
@@ -156,6 +176,23 @@ public class MapActivity extends AppCompatActivity implements
             mGoogleApiClient.disconnect();
         }
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP);
+//        registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                new IntentFilter(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP));
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
+        super.onPause();
     }
 
     /*
@@ -326,9 +363,9 @@ public class MapActivity extends AppCompatActivity implements
 //
 //
 //
-        if (user == null)
-            user  = ParseUser.getCurrentUser();
-        if (user != null && user.getString(Driver.STATE) != null && !(user.getString(Driver.STATE)).equals(DriverStates.INACTIVE)) {
+        if (driver == null)
+            driver = ParseUser.getCurrentUser();
+        if (driver != null && driver.getString(Driver.STATE) != null && !(driver.getString(Driver.STATE)).equals(DriverStates.INACTIVE)) {
             //dont track the location in INACTIVE state
             gpst.startLocationTracking();
         } else {
@@ -362,16 +399,26 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void uploadDriverLocation(Double latitude, Double longitude) {
-        if (user == null)
-             user  = ParseUser.getCurrentUser();
-        if (user != null) {
-            user.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
-            user.saveInBackground();
+        if (driver == null)
+             driver = ParseUser.getCurrentUser();
+        if (driver != null) {
+            driver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
+            driver.saveInBackground();
         }
     }
 
-    private void manageDriverActionButtons(String currentState) {
-        List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState);
+    private void manageDriverActionButtons(String currentState, String tripState) {
+//        String tripState = "";
+        ParseQuery tripQ = ParseQuery.getQuery("Trip");
+        if (currentState.equals(DriverStates.IN_TRIP) && tripState == null) {
+            try {
+                trip = tripQ.get(driver.getString("driver_currentTripId"));
+                tripState = trip.getString("state");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState, tripState);
         for (int i = 0; i < nextStates.size(); i++) {
             int id = -1;
             switch (nextStates.get(i)){
@@ -381,18 +428,18 @@ public class MapActivity extends AppCompatActivity implements
                 case DriverStates.ACTIVE:
                     id = R.id.activeBtn;
                     break;
-                case DriverStates.GOING_TO_PICKUP:
+                case TripStates.GOING_TO_PICKUP:
                     id = R.id.goingPickupBtn;
                     break;
-                case DriverStates.REACHED_CUSTOMER:
+                case TripStates.REACHED_CUSTOMER:
                     id = R.id.reachedCustomerBtn;
                     break;
-                case DriverStates.PICKEDUP_CUSTOMER:
+                case TripStates.PICKEDUP_CUSTOMER:
                     id = R.id.pickedupCustomerBtn;
                     break;
-                case DriverStates.GOING_TO_DESTINATION:
+                case TripStates.GOING_TO_DESTINATION:
                     id = R.id.goignDestinationBtn;
-                case DriverStates.REACHED_DESTINATION:
+                case TripStates.REACHED_DESTINATION:
                     id = R.id.reachedDestinationBtn;
                     break;
                 default:
@@ -415,46 +462,58 @@ public class MapActivity extends AppCompatActivity implements
     }
 
 
+
+
     public void goActive(View view) {
-        user.put(Driver.STATE, DriverStates.ACTIVE);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.ACTIVE);
+        driver.put(Driver.STATE, DriverStates.ACTIVE);
+        driver.saveInBackground();
+        manageDriverActionButtons(DriverStates.ACTIVE, null);
     }
 
     public void goInactive(View view) {
-        user.put(Driver.STATE, DriverStates.INACTIVE);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.INACTIVE);
+        driver.put(Driver.STATE, DriverStates.INACTIVE);
+        driver.saveInBackground();
+        manageDriverActionButtons(DriverStates.INACTIVE, null);
     }
 
     public void goPickupCustomer(View view) {
-        user.put(Driver.STATE, DriverStates.GOING_TO_PICKUP);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.GOING_TO_PICKUP);
+        trip.put(Driver.STATE, TripStates.GOING_TO_PICKUP);
+        trip.saveInBackground();
+        manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.GOING_TO_PICKUP);
     }
 
     public void reachedCustomer(View view) {
-        user.put(Driver.STATE, DriverStates.REACHED_CUSTOMER);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.REACHED_CUSTOMER);
+        trip.put(Driver.STATE, TripStates.REACHED_CUSTOMER);
+        trip.saveInBackground();
+        manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.REACHED_CUSTOMER);
     }
 
     public void pickedupCustomer(View view) {
-        user.put(Driver.STATE, DriverStates.PICKEDUP_CUSTOMER);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.PICKEDUP_CUSTOMER);
+        trip.put(Driver.STATE, TripStates.PICKEDUP_CUSTOMER);
+        trip.saveInBackground();
+        manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.PICKEDUP_CUSTOMER);
     }
 
     public void goingDestination(View view) {
-        user.put(Driver.STATE, DriverStates.GOING_TO_DESTINATION);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.GOING_TO_DESTINATION);
+        trip.put(Driver.STATE, TripStates.GOING_TO_DESTINATION);
+        trip.saveInBackground();
+        manageDriverActionButtons(DriverStates.IN_TRIP, TripStates.GOING_TO_DESTINATION);
     }
 
     public void reachedDestination(View view) {
-        user.put(Driver.STATE, DriverStates.REACHED_DESTINATION);
-        user.saveInBackground();
-        manageDriverActionButtons(DriverStates.REACHED_DESTINATION);
+        trip.put(Driver.STATE, TripStates.REACHED_DESTINATION);
+        trip.saveInBackground();
+        driver.put(Driver.STATE, DriverStates.ACTIVE);
+        driver.saveInBackground();
+        manageDriverActionButtons(DriverStates.ACTIVE, TripStates.REACHED_DESTINATION);
+    }
+
+    public void cancelTrip(View view) {
+        trip.put(Driver.STATE, TripStates.TRIP_CANCEL);
+        trip.saveInBackground();
+        driver.put(Driver.STATE, DriverStates.ACTIVE);
+        driver.saveInBackground();
+        manageDriverActionButtons(DriverStates.ACTIVE, TripStates.TRIP_CANCEL);
     }
 
     private void toggleOtherButtons(int id) {
@@ -468,10 +527,12 @@ public class MapActivity extends AppCompatActivity implements
     }
 
     private void setupPushnotifications() {
-        if (user != null) {
+        if (driver != null) {
             ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-            installation.put("ownerId", user.getObjectId());
+            installation.put("ownerId", driver.getObjectId());
             installation.saveInBackground();
         }
     }
+
+
 }
