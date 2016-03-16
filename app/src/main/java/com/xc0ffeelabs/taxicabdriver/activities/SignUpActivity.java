@@ -1,5 +1,6 @@
 package com.xc0ffeelabs.taxicabdriver.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -126,9 +127,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUpSuccess() {
         Log.d(TAG, "Driver signed up!");
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        startActivity(mapIntent);
+        finish();
     }
 
     private void signUpFailed() {
-
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        startActivity(mapIntent);
+        finish();
     }
 }
