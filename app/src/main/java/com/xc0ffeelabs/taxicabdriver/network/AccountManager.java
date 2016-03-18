@@ -78,4 +78,9 @@ public class AccountManager {
             }
         });
     }
+
+    public void logoutUser() {
+        ParseUser.logOut();
+        storeCredentials("", "");
+    }
 }

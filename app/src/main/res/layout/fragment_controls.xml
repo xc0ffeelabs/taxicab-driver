@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.xc0ffeelabs.taxicabdriver.fragments.ControlsFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/activeStatusText"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tvStatus"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Inactive"
+        android:layout_above="@id/tvStatus"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/primaryBtn"/>
+
+
+</RelativeLayout>

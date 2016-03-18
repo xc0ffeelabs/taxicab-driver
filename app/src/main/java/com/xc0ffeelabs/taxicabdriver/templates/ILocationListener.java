@@ -7,6 +7,4 @@ import android.location.Location;
  */
 public interface ILocationListener {
     public void updateLocation(Location location);
-    public void updateLatitude(Double lat);
-    public void updateLongitude(Double lang);
 }

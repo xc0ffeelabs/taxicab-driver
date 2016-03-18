@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Created by skammila on 3/13/16.
@@ -102,13 +103,14 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
         Intent requestDenyInt = new Intent(DENY_ACTION);
         requestDenyInt.putExtra("tripId", datavalue.getString("tripId"));
         requestDenyInt.putExtra("driverId", datavalue.getString("driverId"));
-        PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(context, 12345, requestDenyInt, Intent.FILL_IN_DATA);
+        int rnd = new Random().nextInt();
+        PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(context, rnd, requestDenyInt, Intent.FILL_IN_DATA);
 
         //accept intent
         Intent requestAcceptInt = new Intent(ACCEPT_ACTION);
         requestAcceptInt.putExtra("tripId", datavalue.getString("tripId"));
         requestAcceptInt.putExtra("driverId", datavalue.getString("driverId"));
-        PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(context, 12345, requestAcceptInt, Intent.FILL_IN_DATA);
+        PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(context, rnd, requestAcceptInt, Intent.FILL_IN_DATA);
 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)

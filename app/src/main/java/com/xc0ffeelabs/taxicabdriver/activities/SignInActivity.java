@@ -76,7 +76,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onLoginSuccess() {
                 setLoading(false);
                 Log.d(TAG, "Driver logged in");
-                Intent mapIntent = new Intent(SignInActivity.this, MapActivity.class);
+                Intent mapIntent = new Intent(SignInActivity.this, MapActivityNew.class);
                 startActivity(mapIntent);
             }
 

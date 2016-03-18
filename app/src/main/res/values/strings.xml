@@ -22,4 +22,19 @@
     <string name="drStatus">DriverStatus</string>
     <string name="lbltitle">Title</string>
     <string name="lbltext">Text</string>
+    <string name="title_logout">Logout</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="logout_conf">Logout</string>
+    <string name="logout_msg">Are you sure to logout?</string>
+    <string name="logout">Logout</string>
+    <string name="cancel">Cancel</string>
+    <string name="activeStatusText">You are in queue</string>
+    <string name="inactiveStatus">Go Active to get rides...</string>
+    <string name="inactiveButton">Go Inactive</string>
+    <string name="activeButton">Go Active</string>
+    <string name="reachedCustomerButton">Reached Customer?</string>
+    <string name="goPickupCustomer">Go pickup customer</string>
+    <string name="goDestination">Start driving to destination</string>
+    <string name="tripCompleteButton">Reached Destination?</string>
 </resources>

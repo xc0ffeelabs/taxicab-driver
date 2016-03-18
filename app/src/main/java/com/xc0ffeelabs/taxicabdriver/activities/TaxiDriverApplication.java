@@ -9,6 +9,7 @@ import com.parse.interceptors.ParseLogInterceptor;
 import com.securepreferences.SecurePreferences;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.network.AccountManager;
+import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 public class TaxiDriverApplication extends Application {
 
@@ -32,6 +33,10 @@ public class TaxiDriverApplication extends Application {
 
     public static AccountManager getAccountManager() {
         return AccountManager.getInstance();
+    }
+
+    public static StateManager getStateManager() {
+        return StateManager.getInstance();
     }
 
     private void initializeParse() {

@@ -127,14 +127,13 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUpSuccess() {
         Log.d(TAG, "Driver signed up!");
-        Intent mapIntent = new Intent(this, MapActivity.class);
+        Intent mapIntent = new Intent(this, MapActivityNew.class);
         startActivity(mapIntent);
         finish();
     }
 
     private void signUpFailed() {
-        Intent mapIntent = new Intent(this, MapActivity.class);
-        startActivity(mapIntent);
+        Log.e(TAG, "Driver signup failed");
         finish();
     }
 }

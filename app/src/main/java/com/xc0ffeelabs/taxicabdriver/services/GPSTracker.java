@@ -13,9 +13,12 @@ import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
+import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.templates.ILocationListener;
 
-public class GPSTracker extends Service implements LocationListener{
+public class GPSTracker extends Service implements LocationListener, ILocationListener{
      private final Context mContext;
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -26,7 +29,7 @@ public class GPSTracker extends Service implements LocationListener{
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
-    ILocationListener updateListener = null;
+//    ILocationListener updateListener = null;
 
 
     // The minimum distance to change Updates in meters
@@ -38,9 +41,9 @@ public class GPSTracker extends Service implements LocationListener{
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context,ILocationListener listener) {
+    public GPSTracker(Context context) {
         this.mContext = context;
-        this.updateListener = listener;
+//        this.updateListener = listener;
 //        getLocation();
     }
 
@@ -192,9 +195,9 @@ public class GPSTracker extends Service implements LocationListener{
 
     @Override
     public void onLocationChanged(Location location) {
-      if(location != null && updateListener != null){
-        updateListener.updateLocation(location);
-        updateListener.updateLatitude(location.getLatitude());
+      if(location != null){
+        this.updateLocation(location);
+//        this.updateLatitude(location.getLatitude());
       }
     }
 
@@ -213,5 +216,14 @@ public class GPSTracker extends Service implements LocationListener{
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
+    }
+
+    @Override
+    public void updateLocation(Location location) {
+        ParseUser driver = ParseUser.getCurrentUser();
+        if (driver != null) {
+            driver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
+            driver.saveInBackground();
+        }
     }
 }

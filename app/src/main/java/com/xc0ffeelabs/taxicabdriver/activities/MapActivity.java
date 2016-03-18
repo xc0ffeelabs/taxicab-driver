@@ -109,14 +109,14 @@ public class MapActivity extends AppCompatActivity implements
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
 
-        gpst = new GPSTracker(this, this);
+        gpst = new GPSTracker(this);
 
         driver = ParseUser.getCurrentUser();
         if (driver != null && driver.getString(Driver.STATE) == null) {
             driver.put(Driver.STATE, DriverStates.INACTIVE);
             driver.saveInBackground();
         } else if (driver == null) {
-            Toast.makeText(this, "Error - You didn't login. Please signup with GoTaxi.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Error - You didn't login. Please signup with GoTaxi.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,7 +135,7 @@ public class MapActivity extends AppCompatActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
             MapActivityPermissionsDispatcher.getMyLocationWithCheck(this);
         } else {
             Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
@@ -262,7 +262,7 @@ public class MapActivity extends AppCompatActivity implements
         // Display the connection status
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
@@ -376,15 +376,15 @@ public class MapActivity extends AppCompatActivity implements
         uploadDriverLocation(location.getLatitude(), location.getLongitude());
     }
 
-    @Override
-    public void updateLongitude(Double lang) {
-        Log.i("Location", "Longitude: " + lang);
-    }
-
-    @Override
-    public void updateLatitude(Double lat) {
-        Log.i("Location", " Latitude: "+ lat);
-    }
+//    @Override
+//    public void updateLongitude(Double lang) {
+//        Log.i("Location", "Longitude: " + lang);
+//    }
+//
+//    @Override
+//    public void updateLatitude(Double lat) {
+//        Log.i("Location", " Latitude: "+ lat);
+//    }
 
     private void uploadDriverLocation(Double latitude, Double longitude) {
         if (driver == null)
@@ -413,7 +413,7 @@ public class MapActivity extends AppCompatActivity implements
             switch (nextStates.get(i)){
                 case DriverStates.INACTIVE:
                     id = R.id.inactiveBtn;
-                    toastMsg = "You can Go Active";
+//                    toastMsg = "You can Go Active";
                     break;
                 case DriverStates.ACTIVE:
                     id = R.id.activeBtn;
@@ -425,7 +425,6 @@ public class MapActivity extends AppCompatActivity implements
                     break;
                 case TripStates.REACHED_CUSTOMER:
                     id = R.id.reachedCustomerBtn;
-                    toastMsg = "Go, pick the customer";
                     break;
                 case TripStates.PICKEDUP_CUSTOMER:
                     id = R.id.pickedupCustomerBtn;
@@ -433,11 +432,10 @@ public class MapActivity extends AppCompatActivity implements
                     break;
                 case TripStates.GOING_TO_DESTINATION:
                     id = R.id.goignDestinationBtn;
-                    toastMsg = "Start Driving to destination";
                     break;
                 case TripStates.REACHED_DESTINATION:
                     id = R.id.reachedDestinationBtn;
-                    toastMsg = "You are in queue for next trip. Thanks.";
+                    toastMsg = "Start Driving to destination";
                     break;
                 default:
                     break;
@@ -449,7 +447,10 @@ public class MapActivity extends AppCompatActivity implements
                 toggleOtherButtons(id);
             }
 
-            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+            if (toastMsg.length() > 0) {
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+            }
+
         }
         if (currentState.equals(DriverStates.ACTIVE) || currentState.equals(DriverStates.INACTIVE)) {
             //hide cancel button

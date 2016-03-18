@@ -42,8 +42,8 @@
         <activity android:name=".activities.SignInActivity" />
         <activity android:name=".activities.NotificationActivity" />
         <activity android:name=".activities.SignUpActivity" />
-        <activity android:name=".activities.MapActivity" >
-        </activity>
+        <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.MapActivityNew" />
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
