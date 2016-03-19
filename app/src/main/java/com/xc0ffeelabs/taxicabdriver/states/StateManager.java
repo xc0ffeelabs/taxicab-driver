@@ -11,7 +11,22 @@ public class StateManager {
         Inactive,
         EnrouteCustomer,
         EnrouteDestination,
-        ReachedDestination
+        ReachedDestination;
+
+        public static States getEnum(String s){
+            if(Active.name().equals(s)){
+                return Active;
+            }else if(Inactive.name().equals(s)){
+                return Inactive;
+            }else if(EnrouteCustomer.name().equals(s)){
+                return EnrouteCustomer;
+            }else if (EnrouteDestination.name().equals(s)){
+                return EnrouteDestination;
+            }else if (ReachedDestination.name().equals(s)){
+                return ReachedDestination;
+            }
+            throw new IllegalArgumentException("No State specified for this string");
+        }
 //        ,
 //        ListDriver,
 //        TripRequested,
@@ -41,12 +56,17 @@ public class StateManager {
         mAcitivity = activity;
     }
 
-    public void startState(States state, Bundle data) {
+    public void startState(States nextState, Bundle data) {
+        States currentState = getCurrentStateEnum();
+        if (nextState == currentState) {
+            //next state is same as current state. DO nothing
+            return;
+        }
         if (mCurrentState != null) {
             mCurrentState.exitState();
         }
 
-        switch (state) {
+        switch (nextState) {
             case Active:
                 mCurrentState = ActiveState.getInstance();
                 break;
@@ -67,4 +87,28 @@ public class StateManager {
         }
         mCurrentState.enterState(mAcitivity, data);
     }
+
+    public States getCurrentStateEnum() {
+        if (mCurrentState != null) {
+            if (mCurrentState instanceof ActiveState) {
+                return States.Active;
+            }
+
+            else if (mCurrentState instanceof InactiveState) {
+                return States.Inactive;
+            }
+
+            else if (mCurrentState instanceof EnrouteCustomerState) {
+                return States.EnrouteCustomer;
+            }
+
+            else if (mCurrentState instanceof EnrouteDestinationState) {
+                return States.EnrouteDestination;
+            }
+
+        }
+        return null;
+    }
+
+
 }

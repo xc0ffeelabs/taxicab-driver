@@ -11,8 +11,9 @@ import android.util.Log;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
+import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -66,7 +67,7 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
                 trip.saveInBackground();
 
                 ParseUser driver = ParseUser.getQuery().get(driverId);
-                driver.put(Driver.STATE, DriverStates.IN_TRIP);
+                driver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
                 driver.put("driver_currentTripId", tripId);
                 Task saveDr = driver.saveInBackground();
                 saveDr.onSuccess(new Continuation() {
@@ -74,7 +75,7 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
                     public Object then(Task task) throws Exception {
                         Intent mapInt = new Intent(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP);
                         LocalBroadcastManager.getInstance(context).sendBroadcast(mapInt);
-                        Intent intentMap = new Intent(context, MapActivity.class);
+                        Intent intentMap = new Intent(context, MapActivityNew.class);
                         intentMap.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intentMap);
                         return null;

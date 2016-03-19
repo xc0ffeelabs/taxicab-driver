@@ -1,8 +1,5 @@
 package com.xc0ffeelabs.taxicabdriver.services;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by skammila on 3/10/16.
  */
@@ -72,68 +69,68 @@ public class DriverStateManager {
 //        }
 //    }
 
-    public static List<String> getNextPossibleStates(String currState, String tripState) {
-        List<String> states = new ArrayList<String>();
-        if (currState != null) {
-            switch (currState){
-                case DriverStates.INACTIVE:
-                    states.add(DriverStates.ACTIVE);
-                    break;
-                case DriverStates.ACTIVE:
-                    states.add(DriverStates.INACTIVE);
-                    break;
-                case DriverStates.IN_TRIP:
-                    if (tripState != null) {
-                        //handle all trip trip states here
-                        switch (tripState){
-                            case TripStates.ACCEPTED_CUSTOMER_REQUEST:
-                                states.add(TripStates.GOING_TO_PICKUP);
-                                states.add(TripStates.TRIP_CANCEL);
-                                break;
-                            case TripStates.GOING_TO_PICKUP:
-                                states.add(TripStates.REACHED_CUSTOMER);
-                                states.add(TripStates.TRIP_CANCEL);
-                                break;
-                            case TripStates.REACHED_CUSTOMER:
-                                states.add(TripStates.PICKEDUP_CUSTOMER);
-                                states.add(TripStates.TRIP_CANCEL);
-                                break;
-                            case TripStates.PICKEDUP_CUSTOMER:
-                                states.add(TripStates.GOING_TO_DESTINATION);
-                                states.add(TripStates.TRIP_CANCEL);
-                                break;
-                            case TripStates.GOING_TO_DESTINATION:
-                                states.add(TripStates.REACHED_DESTINATION);
-                                states.add(TripStates.TRIP_CANCEL);
-                                break;
-                            case TripStates.REACHED_DESTINATION:
-                                states.add(DriverStates.ACTIVE);
-                                break;
-                        }
-                    }
-
-                default:
-                    break;
-            }
-        }
-
-
-        return states;
-    }
-
-    public static List<String> getAllPossibleStates(String currState) {
-        List<String> states = new ArrayList<String>();
-        switch (currState){
-            case DriverStates.INACTIVE:
-                states.add(DriverStates.ACTIVE);
-                break;
-            case DriverStates.ACTIVE:
-                states.add(DriverStates.INACTIVE);
-                break;
-            default:
-                break;
-        }
-
-        return states;
-    }
+//    public static List<String> getNextPossibleStates(String currState, String tripState) {
+//        List<String> states = new ArrayList<String>();
+//        if (currState != null) {
+//            switch (currState){
+//                case DriverStates.INACTIVE:
+//                    states.add(DriverStates.ACTIVE);
+//                    break;
+//                case DriverStates.ACTIVE:
+//                    states.add(DriverStates.INACTIVE);
+//                    break;
+//                case DriverStates.IN_TRIP:
+//                    if (tripState != null) {
+//                        //handle all trip trip states here
+//                        switch (tripState){
+//                            case TripStates.ACCEPTED_CUSTOMER_REQUEST:
+//                                states.add(TripStates.GOING_TO_PICKUP);
+//                                states.add(TripStates.TRIP_CANCEL);
+//                                break;
+//                            case TripStates.GOING_TO_PICKUP:
+//                                states.add(TripStates.REACHED_CUSTOMER);
+//                                states.add(TripStates.TRIP_CANCEL);
+//                                break;
+//                            case TripStates.REACHED_CUSTOMER:
+//                                states.add(TripStates.PICKEDUP_CUSTOMER);
+//                                states.add(TripStates.TRIP_CANCEL);
+//                                break;
+//                            case TripStates.PICKEDUP_CUSTOMER:
+//                                states.add(TripStates.GOING_TO_DESTINATION);
+//                                states.add(TripStates.TRIP_CANCEL);
+//                                break;
+//                            case TripStates.GOING_TO_DESTINATION:
+//                                states.add(TripStates.REACHED_DESTINATION);
+//                                states.add(TripStates.TRIP_CANCEL);
+//                                break;
+//                            case TripStates.REACHED_DESTINATION:
+//                                states.add(DriverStates.ACTIVE);
+//                                break;
+//                        }
+//                    }
+//
+//                default:
+//                    break;
+//            }
+//        }
+//
+//
+//        return states;
+//    }
+//
+//    public static List<String> getAllPossibleStates(String currState) {
+//        List<String> states = new ArrayList<String>();
+//        switch (currState){
+//            case DriverStates.INACTIVE:
+//                states.add(DriverStates.ACTIVE);
+//                break;
+//            case DriverStates.ACTIVE:
+//                states.add(DriverStates.INACTIVE);
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return states;
+//    }
 }

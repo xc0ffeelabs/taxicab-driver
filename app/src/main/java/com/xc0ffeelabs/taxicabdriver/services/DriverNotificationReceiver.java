@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import java.util.Random;
 
 /**
  * Created by skammila on 3/13/16.
@@ -103,7 +102,7 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
         Intent requestDenyInt = new Intent(DENY_ACTION);
         requestDenyInt.putExtra("tripId", datavalue.getString("tripId"));
         requestDenyInt.putExtra("driverId", datavalue.getString("driverId"));
-        int rnd = new Random().nextInt();
+        int rnd = (int)System.currentTimeMillis();
         PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(context, rnd, requestDenyInt, Intent.FILL_IN_DATA);
 
         //accept intent

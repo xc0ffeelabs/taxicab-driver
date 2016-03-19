@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,6 +36,9 @@ public class MapsFragment extends Fragment implements
     private SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
+    private LocationRequest mLocationRequest;
+    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
+    private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
     public MapsFragment() {
     }
@@ -152,7 +156,6 @@ public class MapsFragment extends Fragment implements
     @Override
     public void onStop() {
         disconnectClient();
-//        TaxiDriverApplication.getNearbyDrivers().stopQueryDriverLocationUpdates();
         super.onStop();
     }
 
@@ -163,6 +166,7 @@ public class MapsFragment extends Fragment implements
         }
     }
 
+
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
@@ -171,6 +175,7 @@ public class MapsFragment extends Fragment implements
             Toast.makeText(getContext(), "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {

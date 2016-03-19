@@ -67,7 +67,7 @@ public class MapActivity extends AppCompatActivity implements
     private long FASTEST_INTERVAL = 5000; /* 5 secs */
 
     private GPSTracker gpst;
-    private ParseUser driver;
+    private Driver driver;
     private ParseObject trip;
 
     /*
@@ -79,10 +79,10 @@ public class MapActivity extends AppCompatActivity implements
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            driver = ParseUser.getCurrentUser();
+            driver = (Driver)ParseUser.getCurrentUser();
             ParseQuery tripQ = ParseQuery.getQuery("Trip");
             try {
-                driver = driver.fetch();
+                driver = (Driver)driver.fetch();
                 trip = tripQ.get(driver.getString("driver_currentTripId"));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -109,9 +109,9 @@ public class MapActivity extends AppCompatActivity implements
             Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
 
-        gpst = new GPSTracker(this);
+        gpst = new GPSTracker(this, driver);
 
-        driver = ParseUser.getCurrentUser();
+        driver = (Driver)ParseUser.getCurrentUser();
         if (driver != null && driver.getString(Driver.STATE) == null) {
             driver.put(Driver.STATE, DriverStates.INACTIVE);
             driver.saveInBackground();
@@ -360,7 +360,7 @@ public class MapActivity extends AppCompatActivity implements
 
     public void scheduleLocationUpdates() {
         if (driver == null)
-            driver = ParseUser.getCurrentUser();
+            driver = (Driver)ParseUser.getCurrentUser();
         if (driver != null && driver.getString(Driver.STATE) != null && !(driver.getString(Driver.STATE)).equals(DriverStates.INACTIVE)) {
             //dont track the location in INACTIVE state
             gpst.startLocationTracking();
@@ -388,7 +388,7 @@ public class MapActivity extends AppCompatActivity implements
 
     private void uploadDriverLocation(Double latitude, Double longitude) {
         if (driver == null)
-             driver = ParseUser.getCurrentUser();
+             driver = (Driver)ParseUser.getCurrentUser();
         if (driver != null) {
             driver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
             driver.saveInBackground();
@@ -407,51 +407,51 @@ public class MapActivity extends AppCompatActivity implements
             }
         }
         String toastMsg = "";
-        List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState, tripState);
-        for (int i = 0; i < nextStates.size(); i++) {
-            int id = -1;
-            switch (nextStates.get(i)){
-                case DriverStates.INACTIVE:
-                    id = R.id.inactiveBtn;
-//                    toastMsg = "You can Go Active";
-                    break;
-                case DriverStates.ACTIVE:
-                    id = R.id.activeBtn;
-                    toastMsg = "You are in queue for next trip.";
-                    break;
-                case TripStates.GOING_TO_PICKUP:
-                    id = R.id.goingPickupBtn;
-                    toastMsg = "Go, pick the customer";
-                    break;
-                case TripStates.REACHED_CUSTOMER:
-                    id = R.id.reachedCustomerBtn;
-                    break;
-                case TripStates.PICKEDUP_CUSTOMER:
-                    id = R.id.pickedupCustomerBtn;
-                    toastMsg = "Go, pick the customer";
-                    break;
-                case TripStates.GOING_TO_DESTINATION:
-                    id = R.id.goignDestinationBtn;
-                    break;
-                case TripStates.REACHED_DESTINATION:
-                    id = R.id.reachedDestinationBtn;
-                    toastMsg = "Start Driving to destination";
-                    break;
-                default:
-                    break;
-
-            }
-            if (id != -1) {
-//                Button btn = (Button)findViewById(id);
-//                btn.setVisibility(View.VISIBLE);
-                toggleOtherButtons(id);
-            }
-
-            if (toastMsg.length() > 0) {
-                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
-            }
-
-        }
+//        List<String> nextStates = DriverStateManager.getNextPossibleStates(currentState, tripState);
+//        for (int i = 0; i < nextStates.size(); i++) {
+//            int id = -1;
+//            switch (nextStates.get(i)){
+//                case DriverStates.INACTIVE:
+//                    id = R.id.inactiveBtn;
+////                    toastMsg = "You can Go Active";
+//                    break;
+//                case DriverStates.ACTIVE:
+//                    id = R.id.activeBtn;
+//                    toastMsg = "You are in queue for next trip.";
+//                    break;
+//                case TripStates.GOING_TO_PICKUP:
+//                    id = R.id.goingPickupBtn;
+//                    toastMsg = "Go, pick the customer";
+//                    break;
+//                case TripStates.REACHED_CUSTOMER:
+//                    id = R.id.reachedCustomerBtn;
+//                    break;
+//                case TripStates.PICKEDUP_CUSTOMER:
+//                    id = R.id.pickedupCustomerBtn;
+//                    toastMsg = "Go, pick the customer";
+//                    break;
+//                case TripStates.GOING_TO_DESTINATION:
+//                    id = R.id.goignDestinationBtn;
+//                    break;
+//                case TripStates.REACHED_DESTINATION:
+//                    id = R.id.reachedDestinationBtn;
+//                    toastMsg = "Start Driving to destination";
+//                    break;
+//                default:
+//                    break;
+//
+//            }
+//            if (id != -1) {
+////                Button btn = (Button)findViewById(id);
+////                btn.setVisibility(View.VISIBLE);
+//                toggleOtherButtons(id);
+//            }
+//
+//            if (toastMsg.length() > 0) {
+//                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show();
+//            }
+//
+//        }
         if (currentState.equals(DriverStates.ACTIVE) || currentState.equals(DriverStates.INACTIVE)) {
             //hide cancel button
             findViewById(R.id.cancelTripBtn).setVisibility(View.GONE);

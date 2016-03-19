@@ -1,5 +1,7 @@
 package com.xc0ffeelabs.taxicabdriver.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +16,14 @@ import android.view.MenuItem;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
@@ -42,7 +47,25 @@ public class MapActivityNew extends AppCompatActivity implements MapsFragment.Ma
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private GPSTracker gpstTacker;
-    private Driver driver;
+    private Driver mDriver;
+    private Trip mTrip;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mDriver = (Driver)ParseUser.getCurrentUser();
+            ParseQuery tripQ = ParseQuery.getQuery("Trip");
+            try {
+                mDriver = (Driver)mDriver.fetch();
+                mTrip = (Trip)tripQ.get(mDriver.getString("driver_currentTripId"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String tripState = mTrip != null? mTrip.getString(Driver.STATE) : null;
+
+            StateManager.getInstance().startState(StateManager.States.getEnum(mDriver.getString(Driver.STATE)), null);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +81,8 @@ public class MapActivityNew extends AppCompatActivity implements MapsFragment.Ma
         setupLocationTack();
 
         setupDriver();
+
+//        setupInitialState();
 
         TaxiDriverApplication.getStateManager().setActivity(this);
 
@@ -121,18 +146,24 @@ public class MapActivityNew extends AppCompatActivity implements MapsFragment.Ma
     }
 
     private void setupLocationTack() {
-        gpstTacker = new GPSTracker(this);
+        gpstTacker = new GPSTracker(this, mDriver);
     }
 
     private void setupDriver() {
-        if (driver == null) {
-            driver = (Driver)ParseUser.getCurrentUser();
+        if (mDriver == null) {
+            mDriver = (Driver)ParseUser.getCurrentUser();
         }
-        if (driver == null) {
+        if (mDriver == null) {
             //Driver not found. So go back to SignIn screen
             finish();
         }
     }
+
+//    private void setupInitialState() {
+//        String state = mDriver.getString(Driver.STATE);
+//        if (state==null || state.length()<0) state= DriverStates.INACTIVE;
+//        TaxiDriverApplication.getStateManager().startState(StateManager.States.getEnum(state), null);
+//    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -159,8 +190,11 @@ public class MapActivityNew extends AppCompatActivity implements MapsFragment.Ma
     public void onMapReady(GoogleMap map, GoogleApiClient apiClient) {
         mMap = map;
         mApiClient = apiClient;
-        TaxiDriverApplication.getStateManager().startState(StateManager.States.Inactive, null);
+        String state = mDriver.getString(Driver.STATE);
+        if (state==null || state.length()<0) state = StateManager.States.Inactive.toString();
+        TaxiDriverApplication.getStateManager().startState(StateManager.States.getEnum(state), null);
     }
+
 
     public GoogleApiClient getApiClient() {
         return mApiClient;
@@ -174,7 +208,7 @@ public class MapActivityNew extends AppCompatActivity implements MapsFragment.Ma
         return gpstTacker;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Driver getmDriver() {
+        return mDriver;
     }
 }

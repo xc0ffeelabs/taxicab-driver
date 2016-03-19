@@ -29,6 +29,7 @@ public class GPSTracker extends Service implements LocationListener, ILocationLi
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
+    private Driver mDriver;
 //    ILocationListener updateListener = null;
 
 
@@ -41,8 +42,9 @@ public class GPSTracker extends Service implements LocationListener, ILocationLi
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context) {
+    public GPSTracker(Context context, Driver driver) {
         this.mContext = context;
+        this.mDriver = driver;
 //        this.updateListener = listener;
 //        getLocation();
     }
@@ -220,10 +222,13 @@ public class GPSTracker extends Service implements LocationListener, ILocationLi
 
     @Override
     public void updateLocation(Location location) {
-        ParseUser driver = ParseUser.getCurrentUser();
-        if (driver != null) {
-            driver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
-            driver.saveInBackground();
+//        ParseUser driver = ParseUser.getCurrentUser();
+        if (mDriver == null) {
+            mDriver = (Driver)ParseUser.getCurrentUser();
+        }
+        if (mDriver != null) {
+            mDriver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(latitude, longitude));
+            mDriver.saveInBackground();
         }
     }
 }

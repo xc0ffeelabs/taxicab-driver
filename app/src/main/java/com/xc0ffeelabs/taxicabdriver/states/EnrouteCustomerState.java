@@ -7,7 +7,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteCustomerControlsFragment;
@@ -31,6 +30,7 @@ public class EnrouteCustomerState implements State {
     private MapActivityNew mActivity;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
+    private Driver mDriver;
 
 
     private static EnrouteCustomerState mEnrouteCustomerState;
@@ -50,14 +50,16 @@ public class EnrouteCustomerState implements State {
         mActivity = activity;
         mMap = mActivity.getMap();
         mApiClient = mActivity.getApiClient();
+        mDriver = mActivity.getmDriver();
         initialize();
     }
 
     private void initialize() {
 
         //update driver state
-        Driver driver = (Driver) ParseUser.getCurrentUser();
-        driver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
+//        Driver driver = (Driver) ParseUser.getCurrentUser();
+        mDriver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
+        mDriver.saveInBackground();
 
         //set controls
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
