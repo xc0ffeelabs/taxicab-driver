@@ -1,6 +1,5 @@
 package com.xc0ffeelabs.taxicabdriver.states;
 
-import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,14 +16,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseGeoPoint;
 import com.xc0ffeelabs.taxicabdriver.R;
-import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
+import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.ActiveControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 
 public class ActiveState implements State {
 
-    private MapActivityNew mActivity;
+    private MapActivity mActivity;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private Driver mDriver;
@@ -44,7 +43,7 @@ public class ActiveState implements State {
     }
 
     @Override
-    public void enterState(MapActivityNew activity, Bundle data) {
+    public void enterState(MapActivity activity, Bundle data) {
         mActivity = activity;
         mMap = mActivity.getMap();
         mApiClient = mActivity.getApiClient();
@@ -56,7 +55,6 @@ public class ActiveState implements State {
 
         //update driver state
         mDriver.put(Driver.STATE, StateManager.States.Active.toString());
-
 
         //set controls
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();

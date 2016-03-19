@@ -102,6 +102,7 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
         Intent requestDenyInt = new Intent(DENY_ACTION);
         requestDenyInt.putExtra("tripId", datavalue.getString("tripId"));
         requestDenyInt.putExtra("driverId", datavalue.getString("driverId"));
+        requestDenyInt.putExtra("userId", datavalue.getString("userId"));
         int rnd = (int)System.currentTimeMillis();
         PendingIntent pendingIntentDeny = PendingIntent.getBroadcast(context, rnd, requestDenyInt, Intent.FILL_IN_DATA);
 
@@ -109,6 +110,7 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
         Intent requestAcceptInt = new Intent(ACCEPT_ACTION);
         requestAcceptInt.putExtra("tripId", datavalue.getString("tripId"));
         requestAcceptInt.putExtra("driverId", datavalue.getString("driverId"));
+        requestAcceptInt.putExtra("userId", datavalue.getString("userId"));
         PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(context, rnd, requestAcceptInt, Intent.FILL_IN_DATA);
 
 
@@ -130,22 +132,5 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
 //        }
     }
 
-//    // Handle push notification by invoking activity directly
-//    // See: http://guides.codepath.com/android/Using-Intents-to-Create-Flows
-//    private void launchSomeActivity(Context context, String datavalue) {
-//        Intent pupInt = new Intent(context, MapActivity.class);
-//        pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        pupInt.putExtra("data", datavalue);
-//        context.getApplicationContext().startActivity(pupInt);
-//    }
-//
-//    // Handle push notification by sending a local broadcast
-//    // to which the activity subscribes to
-//    // See: http://guides.codepath.com/android/Starting-Background-Services#communicating-with-a-broadcastreceiver
-//    private void triggerBroadcastToActivity(Context context, String datavalue) {
-//        Intent intent = new Intent(intentAction);
-//        intent.putExtra("data", datavalue);
-//        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-//    }
 
 }

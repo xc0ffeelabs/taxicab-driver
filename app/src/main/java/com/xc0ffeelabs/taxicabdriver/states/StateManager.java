@@ -2,7 +2,7 @@ package com.xc0ffeelabs.taxicabdriver.states;
 
 import android.os.Bundle;
 
-import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
+import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 
 public class StateManager {
 
@@ -40,7 +40,7 @@ public class StateManager {
     private static StateManager ourInstance;
 
     private State mCurrentState = null;
-    private MapActivityNew mAcitivity;
+    private MapActivity mAcitivity;
 
     public static StateManager getInstance() {
         if (ourInstance == null) {
@@ -52,7 +52,7 @@ public class StateManager {
     private StateManager() {
     }
 
-    public void setActivity(MapActivityNew activity) {
+    public void setActivity(MapActivity activity) {
         mAcitivity = activity;
     }
 

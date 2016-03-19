@@ -15,20 +15,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.xc0ffeelabs.taxicabdriver.R;
-import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
+import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.InactiveControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
-import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
 import com.xc0ffeelabs.taxicabdriver.services.LocationService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class InactiveState implements State {
 
-    private MapActivityNew mActivity;
+    private MapActivity mActivity;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private Driver mDriver;
@@ -48,7 +42,7 @@ public class InactiveState implements State {
     }
 
     @Override
-    public void enterState(MapActivityNew activity, Bundle data) {
+    public void enterState(MapActivity activity, Bundle data) {
         mActivity = activity;
         mMap = mActivity.getMap();
         mApiClient = mActivity.getApiClient();

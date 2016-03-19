@@ -8,7 +8,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.xc0ffeelabs.taxicabdriver.R;
-import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
+import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteDestinationControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 
@@ -27,7 +27,7 @@ public class EnrouteDestinationState implements State {
 //    private NearbyDrivers mNearbyDrivers;
     private volatile boolean mSortRequested = true;
     protected List<Driver> mSortedUsers = new ArrayList<>();
-    private MapActivityNew mActivity;
+    private MapActivity mActivity;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private Driver mDriver;
@@ -46,7 +46,7 @@ public class EnrouteDestinationState implements State {
     }
 
     @Override
-    public void enterState(MapActivityNew activity, Bundle data) {
+    public void enterState(MapActivity activity, Bundle data) {
         mActivity = activity;
         mMap = mActivity.getMap();
         mApiClient = mActivity.getApiClient();
