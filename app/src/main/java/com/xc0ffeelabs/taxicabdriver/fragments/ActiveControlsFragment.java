@@ -33,30 +33,4 @@ public class ActiveControlsFragment extends ControlsFragment {
         mActiveControlsFragment.setStatusText("You are in queue...");
     }
 
-    //    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_controls, container, false);
-//
-//        ButterKnife.bind(this, view);
-//
-//        mPickupBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mListener != null) {
-//                    mListener.onPickupButtonClicked();
-//                }
-//            }
-//        });
-//
-//        setApprTime("--");
-//        return view;
-//    }
-
-//    public void setApprTime(String time) {
-//        if (!TextUtils.isEmpty(time)) {
-//            String formattedStr = getContext().getString(R.string.appr_time, time);
-//            mApprTimeText.setText(formattedStr);
-//        }
-//    }
 }

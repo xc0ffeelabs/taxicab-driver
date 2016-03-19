@@ -1,5 +1,6 @@
 package com.xc0ffeelabs.taxicabdriver.states;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +19,7 @@ import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
 import com.xc0ffeelabs.taxicabdriver.fragments.InactiveControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.services.GPSTracker;
+import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +57,9 @@ public class InactiveState implements State {
     }
 
     private void initialize() {
+
+        Intent intent = new Intent(mActivity, LocationService.class);
+        mActivity.stopService(intent);
 
 
         //update driver state

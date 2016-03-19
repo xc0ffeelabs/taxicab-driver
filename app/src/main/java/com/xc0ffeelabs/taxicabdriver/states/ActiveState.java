@@ -1,5 +1,7 @@
 package com.xc0ffeelabs.taxicabdriver.states;
 
+import android.app.Service;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +20,7 @@ import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivityNew;
 import com.xc0ffeelabs.taxicabdriver.fragments.ActiveControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 
 public class ActiveState implements State {
 
@@ -70,6 +73,9 @@ public class ActiveState implements State {
 
         mDriver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
         mDriver.saveInBackground();
+
+        Intent intent = new Intent(mActivity, LocationService.class);
+        mActivity.startService(intent);
 
     }
 

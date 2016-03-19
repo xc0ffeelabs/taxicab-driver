@@ -55,6 +55,7 @@
 
 
 
+        <service android:name=".services.LocationService"/>
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver"
             android:exported="false">
