@@ -1,10 +1,14 @@
 package com.xc0ffeelabs.taxicabdriver.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +28,7 @@ import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Trip;
+import com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 import butterknife.Bind;
@@ -50,6 +55,18 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     private ParseUser mTripUser;
     private boolean mIsMapReady = false;
 
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("NAYAN", "onReceive of broacast");
+            //setupTripInfo(intent);
+            //initiateDriverState();
+            Intent mapsIntent = new Intent(context, MapActivity.class);
+            mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(mapsIntent);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +80,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
         setupDriver();
 
-        setupTripInfo();
+        setupTripInfo(getIntent());
 
 //        setupInitialState();
 
@@ -77,20 +94,16 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         ft.replace(R.id.fmMap, mapsFragment);
         ft.commit();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                new IntentFilter(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("NAYAN", "onResume");
         if (mIsMapReady) {
-            try {
-                mDriver = (Driver)mDriver.fetch();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            String state = mDriver.getString(Driver.STATE);
-            if (state==null || state.length()<0) state = StateManager.States.Inactive.toString();
-            TaxiDriverApplication.getStateManager().startState(StateManager.States.getEnum(state), null);
+            initiateDriverState();
         }
     }
 
@@ -188,8 +201,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         finish();
     }
 
-    private void setupTripInfo() {
-        Intent intent = getIntent();
+    private void setupTripInfo(Intent intent) {
 
         String tripId = intent.getStringExtra("tripId");
         String userId = intent.getStringExtra("tripUserId");
@@ -231,16 +243,23 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         mMap = map;
         mApiClient = apiClient;
         if (!mIsMapReady) {
+            mIsMapReady = true;
+            initiateDriverState();
+        }
+    }
+
+    private void initiateDriverState() {
+        if (mIsMapReady) {
             try {
                 mDriver = (Driver)mDriver.fetch();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             String state = mDriver.getString(Driver.STATE);
+            Log.d("NAYAN", "State = " + state);
             if (state == null || state.length() < 0)
                 state = StateManager.States.Inactive.toString();
             TaxiDriverApplication.getStateManager().startState(StateManager.States.getEnum(state), null);
-            mIsMapReady = true;
         }
     }
 
@@ -271,5 +290,11 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
     public void setmTrip(Trip mTrip) {
         this.mTrip = mTrip;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 }

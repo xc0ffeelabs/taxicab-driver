@@ -1,5 +1,7 @@
 package com.xc0ffeelabs.taxicabdriver.fragments;
 
+import android.os.Bundle;
+
 import com.xc0ffeelabs.taxicabdriver.activities.TaxiDriverApplication;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
@@ -34,4 +36,8 @@ public class EnrouteCustomerControlsFragment extends ControlsFragment {
         mEnrouteCustomerControlsFragment.setStatusText("Go pickup customer...");
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
 }

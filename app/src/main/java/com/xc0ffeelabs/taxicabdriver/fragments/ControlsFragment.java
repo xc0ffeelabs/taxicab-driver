@@ -2,6 +2,7 @@ package com.xc0ffeelabs.taxicabdriver.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class ControlsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("NAYAN", "OnCreateView called");
         View view = inflater.inflate(R.layout.fragment_controls, container, false);
 
         ButterKnife.bind(this, view);
@@ -43,24 +45,33 @@ public class ControlsFragment extends Fragment {
             }
         });
 
-        setPrimaryButtonText(null);
-
-        setStatusText(null);
-
         updateControlText();
 
         return view;
     }
 
-    public void setPrimaryButtonText(String buttonText){
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("NAYAN", "OnStart called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("NAYAN", "onResume");
+    }
+
+    protected void setPrimaryButtonText(String buttonText){
         if (buttonText == null) buttonText = "Go Active";
         primaryBtn.setText(buttonText);
     }
 
-    public void setStatusText(String status){
+    protected void setStatusText(String status){
         if (status == null) status = "Go Active to get rides...";
         tvStatus.setText(status);
     }
+
     public void updateControlText(){}
 
     @Override

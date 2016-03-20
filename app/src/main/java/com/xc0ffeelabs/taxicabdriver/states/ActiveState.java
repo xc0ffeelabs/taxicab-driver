@@ -67,14 +67,13 @@ public class ActiveState implements State {
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             mMap.moveCamera(cameraUpdate);
             mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(latLng));
-        }
 
-        mDriver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
-        mDriver.saveInBackground();
+            mDriver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+            mDriver.saveInBackground();
+        }
 
         Intent intent = new Intent(mActivity, LocationService.class);
         mActivity.startService(intent);
-
     }
 
 

@@ -1,10 +1,13 @@
 package com.xc0ffeelabs.taxicabdriver.services;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.parse.ParseException;
@@ -15,6 +18,8 @@ import com.parse.SaveCallback;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
+
+import java.util.List;
 
 /**
  * Created by skammila on 3/14/16.
@@ -35,25 +40,21 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
 
         if(ACCEPT_ACTION.equals(action)) {
             try {
-                Log.d("AcceptRequestReceiver", "TripId " + tripId);
+                Log.d("AcceptRequestReceiver", "TripId " + tripId + "driver id = " + driverId);
 
-                ParseObject trip = ParseQuery.getQuery("Trip").get(tripId);
+                final ParseObject trip = ParseQuery.getQuery("Trip").get(tripId);
                 trip.put("status", "confirmed");
                 trip.put("state", TripStates.GOING_TO_PICKUP);
                 trip.saveInBackground();
 
-                ParseUser driver = ParseUser.getQuery().get(driverId);
+                ParseUser driver = ParseUser.getCurrentUser();
                 driver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
                 driver.put("driver_currentTripId", tripId);
                 driver.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            Intent intentMap = new Intent(context, MapActivity.class);
-                            intentMap.putExtra("tripId", tripId);
-                            intentMap.putExtra("tripUserId", userId);
-                            intentMap.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intentMap);
+                            startActivity(context, userId, tripId);
                         } else {
                             Log.d("AcceptRequestReceiver", "e = " + e.getMessage());
                         }
@@ -65,5 +66,32 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void startActivity(Context context, String userId, String tripId) {
+
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(Integer.MAX_VALUE);
+        for (ActivityManager.RunningTaskInfo info : taskInfo) {
+            ComponentName componentInfo = info.topActivity;
+            if (componentInfo.getPackageName().equalsIgnoreCase("com.xc0ffeelabs.taxicabdriver")) {
+                sendBroadcast(context, tripId, userId);
+                return;
+            }
+        }
+
+        Intent intentMap = new Intent(context, MapActivity.class);
+        intentMap.putExtra("tripId", tripId);
+        intentMap.putExtra("tripUserId", userId);
+        intentMap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intentMap);
+    }
+
+    private void sendBroadcast(Context context, String tripId, String userId) {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
+        Intent intent = new Intent(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP);
+        intent.putExtra("tripId", tripId);
+        intent.putExtra("tripUserId", userId);
+        broadcastManager.sendBroadcast(intent);
     }
 }

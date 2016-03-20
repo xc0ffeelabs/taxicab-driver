@@ -1,5 +1,8 @@
 package com.xc0ffeelabs.taxicabdriver.fragments;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import com.xc0ffeelabs.taxicabdriver.activities.TaxiDriverApplication;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
@@ -20,17 +23,21 @@ public class ActiveControlsFragment extends ControlsFragment {
             }
         });
 
-
-
         return mActiveControlsFragment;
     }
 
     @Override
     public void updateControlText() {
+        Log.d("NAYAN", "Update control text");
         //Action available for active state is Inactive
         mActiveControlsFragment.setPrimaryButtonText("Go Inactive");
         //current status is active.
         mActiveControlsFragment.setStatusText("You are in queue...");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
     }
 
 }

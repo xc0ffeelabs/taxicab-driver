@@ -35,6 +35,7 @@ import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.network.GMapV2Direction;
 import com.xc0ffeelabs.taxicabdriver.stubs.NavigateDriverToUserStub;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -87,8 +88,8 @@ public class EnrouteCustomerState implements State {
         mDriver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
         mDriver.saveInBackground();
 
-        if (mUser == null) {
-            Log.e("EnrouteCustomerState", "To initiate this state, user object is needed");
+        if (mUser == null || mTrip == null) {
+            Log.e("EnrouteCustomerState", "To initiate this state, user object and trip are needed");
             StateManager.getInstance().startState(StateManager.States.Active, null);
             return;
         }
@@ -96,7 +97,7 @@ public class EnrouteCustomerState implements State {
         //set controls
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fmControls, EnrouteCustomerControlsFragment.newInstance(), "enroutecustomercontrols");
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
         addDriverMarker();
         addUserMarker();
@@ -116,23 +117,38 @@ public class EnrouteCustomerState implements State {
     }
 
     private void addUserMarker() {
-        if (mUser != null) {
-            try {
-                ParseGeoPoint userLocation = mUser.getParseGeoPoint("currentLocation");
-                mUserLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(mUserLocation)
-                        .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_btn_speak_now));
-                mUserMarker = mMap.addMarker(markerOptions);
-                zoomCamera();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } else {
-//            throw new IllegalStateException("Cant find the User location to prepare directions map");
-        }
+        fetchUserObject();
     }
+
+    private void fetchUserObject() {
+        mUser.fetchInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+                    if (mTrip != null) {
+                        try {
+                            ParseGeoPoint userLocation = mUser.getParseGeoPoint("currentLocation");
+//                JSONObject srcLocation = mTrip.getJSONObject("sourceLocation");
+                            mUserLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(mUserLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
+                            mUserMarker = mMap.addMarker(markerOptions);
+                            zoomCamera();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                    } else {
+//            throw new IllegalStateException("Cant find the User location to prepare directions map");
+                    }
+                } else {
+                    Log.d("NAYAN", "SOmething wrong while fething. e = " + e.getMessage());
+                }
+            }
+        });
+    }
+
 
     private void zoomCamera() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -178,7 +194,7 @@ public class EnrouteCustomerState implements State {
 
     private void updateDriverLocation() {
         mRefreshRequested = true;
-        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
+//        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
     }
 
     private void showRoute() {
