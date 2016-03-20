@@ -1,10 +1,9 @@
 package com.xc0ffeelabs.taxicabdriver.models;
 
 import com.parse.ParseClassName;
-import com.parse.ParseUser;
 
 @ParseClassName("_User")
-public class Driver extends ParseUser {
+    public class Driver extends User {
 
     public static final String ROLE = "role";
     private static final String NAME = "name";

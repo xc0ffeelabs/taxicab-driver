@@ -8,6 +8,9 @@ import com.parse.ParseObject;
 import com.parse.interceptors.ParseLogInterceptor;
 import com.securepreferences.SecurePreferences;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.models.Location;
+import com.xc0ffeelabs.taxicabdriver.models.Trip;
+import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.network.AccountManager;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
@@ -41,7 +44,10 @@ public class TaxiDriverApplication extends Application {
 
     private void initializeParse() {
 
+        ParseObject.registerSubclass(Location.class);
         ParseObject.registerSubclass(Driver.class);
+        ParseObject.registerSubclass(Trip.class);
+        ParseObject.registerSubclass(User.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(APP_ID) // should correspond to APP_ID env variable

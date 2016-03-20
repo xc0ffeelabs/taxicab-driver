@@ -80,24 +80,6 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
     private void createNotification(Context context, JSONObject datavalue) throws JSONException {
 
 
-//        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-//        ComponentName componentInfo = taskInfo.get(0).topActivity;
-//        if(componentInfo.getPackageName().equalsIgnoreCase("com.xc0ffeelabs.taxicabdriver")){
-//            //Activity Running
-////            Send a broadcast with the intent-filter which you register in your activity
-////            where you want to have the updates
-
-//        Intent pupInt = new Intent(context, MapActivity.class);
-//        pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        pupInt.putExtra("data", datavalue);
-//        context.getApplicationContext().startActivity(pupInt);
-//
-//
-//        }
-//        else {
-
-
         //deny intent
         Intent requestDenyInt = new Intent(DENY_ACTION);
         requestDenyInt.putExtra("tripId", datavalue.getString("tripId"));

@@ -28,6 +28,7 @@ import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Trip;
+import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
@@ -51,8 +52,8 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private Driver mDriver;
-    private ParseObject mTrip;
-    private ParseUser mTripUser;
+    private Trip mTrip;
+    private User mTripUser;
     private boolean mIsMapReady = false;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -206,7 +207,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
         if (tripId != null) {
             try {
-                mTrip = ParseQuery.getQuery("Trip").include("_User").get(tripId);
+                mTrip = (Trip)ParseQuery.getQuery("Trip").include("_User").get(tripId);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -216,7 +217,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
         if (mTrip == null && driverTripId != null) {
             try {
-                mTrip = ParseQuery.getQuery("Trip").include("_User").get(driverTripId);
+                mTrip = (Trip)ParseQuery.getQuery("Trip").include("_User").get(driverTripId);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -224,14 +225,14 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
         if (userId != null) {
             try {
-                mTripUser = ParseUser.getQuery().get(userId);
+                mTripUser = (User)ParseUser.getQuery().get(userId);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
         if (mTripUser == null && mTrip != null) {
-            mTripUser = mTrip.getParseUser("user");
+            mTripUser = (User)mTrip.getParseUser("user");
         }
     }
 
@@ -277,11 +278,11 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         return mTrip;
     }
 
-    public ParseUser getmTripUser() {
+    public User getmTripUser() {
         return mTripUser;
     }
 
-    public void setmTripUser(ParseUser mTripUser) {
+    public void setmTripUser(User mTripUser) {
         this.mTripUser = mTripUser;
     }
 

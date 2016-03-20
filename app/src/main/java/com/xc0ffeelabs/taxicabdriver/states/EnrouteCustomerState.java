@@ -28,15 +28,16 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteCustomerControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.network.GMapV2Direction;
 import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 import com.xc0ffeelabs.taxicabdriver.stubs.NavigateDriverToUserStub;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -50,12 +51,11 @@ public class EnrouteCustomerState implements State {
     private Marker mMarker;
     private Marker mUserMarker;
     private ParseObject mTrip;
-    private ParseUser mUser;
+    private User mUser;
     private LatLng mUserLocation;
     private LatLng mDriverLocation;
     private Polyline mLine;
     private static final int MSG_REFRESH_LOCATION = 1;
-    private static final int MSG_STOP_REFRESH_LOCATION = 2;
     private static final int REFRESH_INTERVAL = 7;  // in sec
 
     private boolean mRefreshRequested = false;
@@ -86,6 +86,9 @@ public class EnrouteCustomerState implements State {
 
     private void initialize() {
 
+        /* TODO: Remove this in final app */
+        mActivity.stopService(new Intent(mActivity, LocationService.class));
+
         //update driver state
         mDriver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
         mDriver.saveInBackground();
@@ -112,7 +115,7 @@ public class EnrouteCustomerState implements State {
             mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
 
         } else {
-//            throw new IllegalStateException("Driver location not found while preparing directions map");
+            throw new IllegalStateException("Driver location not found while preparing directions map");
         }
 
     }
@@ -127,21 +130,26 @@ public class EnrouteCustomerState implements State {
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
                     if (mTrip != null) {
-                        try {
-                            ParseGeoPoint userLocation = mUser.getParseGeoPoint("currentLocation");
-//                JSONObject srcLocation = mTrip.getJSONObject("sourceLocation");
-                            mUserLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-                            MarkerOptions markerOptions = new MarkerOptions()
-                                    .position(mUserLocation)
-                                    .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
-                            mUserMarker = mMap.addMarker(markerOptions);
-                            zoomCamera();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        com.xc0ffeelabs.taxicabdriver.models.Location userLocation = mUser.getPickupLocation();
+                        userLocation.fetchInBackground(new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject object, ParseException e) {
+                                if (e == null) {
+                                    mUserLocation = new LatLng(((com.xc0ffeelabs.taxicabdriver.models.Location)object).getLatitude(), ((com.xc0ffeelabs.taxicabdriver.models.Location)object).getLongitude());
+                                    MarkerOptions markerOptions = new MarkerOptions()
+                                            .position(mUserLocation)
+                                            .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
+                                    mUserMarker = mMap.addMarker(markerOptions);
+                                    zoomCamera();
+                                } else {
+                                    throw new IllegalStateException("Cant find the User location to prepare directions map");
+                                }
+                            }
+                        });
+
 
                     } else {
-//            throw new IllegalStateException("Cant find the User location to prepare directions map");
+                        throw new IllegalStateException("Cant find the User location to prepare directions map");
                     }
                 } else {
                     Log.d("NAYAN", "SOmething wrong while fething. e = " + e.getMessage());
@@ -167,7 +175,7 @@ public class EnrouteCustomerState implements State {
         new NavigateDriverToUserStub(mDriverLocation, mUserLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
             @Override
             public void onDestinationReached() {
-                moveToDestState();
+                    moveToDestState();
             }
         }).run();
 
@@ -228,6 +236,8 @@ public class EnrouteCustomerState implements State {
         if (mUserMarker != null) {
             mUserMarker.remove();
         }
+        mMap.clear();
+        mRefreshRequested = false;
     }
 
     private class MyHandler extends Handler {
