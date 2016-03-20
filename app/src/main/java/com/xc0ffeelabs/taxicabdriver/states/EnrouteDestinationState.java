@@ -254,8 +254,35 @@ public class EnrouteDestinationState implements State {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //                        changeState();
+                        notifyUser();
                     }
                 }).create().show();
+    }
+
+    public  void notifyUser () {
+        //send notification to the user that driver arriverd for pickup
+        Map parameters = new HashMap();
+        parameters.put("driverId", mDriver.getObjectId());
+        parameters.put("tripId", mTrip.getObjectId());
+        ParseCloud.callFunctionInBackground("reachedDestination", parameters, new FunctionCallback() {
+            @Override
+            public void done(Object object, ParseException e) {
+                if (e == null) {
+                    Log.i("EnrouteDestination", "Reached destination");
+                } else {
+                    Log.e("EnrouteDestination", "Error: "+ e.getMessage());
+                }
+            }
+
+            @Override
+            public void done(Object o, Throwable throwable) {
+                if (throwable == null) {
+                    Log.i("EnrouteDestination", "Reached destination");
+                } else {
+                    Log.e("EnrouteDestination", "Error: "+ throwable.getMessage());
+                }
+            }
+        });
     }
 
 
