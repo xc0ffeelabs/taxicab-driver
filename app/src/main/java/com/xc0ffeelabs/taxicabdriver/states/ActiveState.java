@@ -80,5 +80,7 @@ public class ActiveState implements State {
     @Override
     public void exitState() {
         mMarker.remove();
+        /* TODO: Remove this in final app */
+        mActivity.stopService(new Intent(mActivity, LocationService.class));
     }
 }

@@ -58,9 +58,6 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("NAYAN", "onReceive of broacast");
-            //setupTripInfo(intent);
-            //initiateDriverState();
             Intent mapsIntent = new Intent(context, MapActivity.class);
             mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(mapsIntent);

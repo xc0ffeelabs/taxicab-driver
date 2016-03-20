@@ -61,6 +61,8 @@ public class EnrouteDestinationState implements State {
         mDriver.put(Driver.STATE, StateManager.States.EnrouteDestination.toString());
         mDriver.saveInBackground();
 
+        //send notification to the user that driver arriverd for pickup
+
         //set controls
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fmControls, EnrouteDestinationControlsFragment.newInstance(), "enroutedestinationcontrols");

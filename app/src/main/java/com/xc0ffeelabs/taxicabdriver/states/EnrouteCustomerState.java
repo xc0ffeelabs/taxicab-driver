@@ -1,6 +1,7 @@
 package com.xc0ffeelabs.taxicabdriver.states;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -33,9 +34,9 @@ import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteCustomerControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.network.GMapV2Direction;
+import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 import com.xc0ffeelabs.taxicabdriver.stubs.NavigateDriverToUserStub;
 
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -53,11 +54,12 @@ public class EnrouteCustomerState implements State {
     private LatLng mUserLocation;
     private LatLng mDriverLocation;
     private Polyline mLine;
-    private boolean mRefreshRequested;
-    private Handler mHandler = new MyHandler(Looper.getMainLooper());
     private static final int MSG_REFRESH_LOCATION = 1;
     private static final int MSG_STOP_REFRESH_LOCATION = 2;
     private static final int REFRESH_INTERVAL = 7;  // in sec
+
+    private boolean mRefreshRequested = false;
+    private MyHandler mHandler = new MyHandler(Looper.getMainLooper());
 
     private static EnrouteCustomerState mEnrouteCustomerState;
 
@@ -101,7 +103,6 @@ public class EnrouteCustomerState implements State {
 
         addDriverMarker();
         addUserMarker();
-
     }
 
     private void addDriverMarker() {
@@ -159,15 +160,18 @@ public class EnrouteCustomerState implements State {
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
         mMap.animateCamera(cu);
         showRoute();
-        updateDriverLocation();
 
-//        /* TODO: Remove this for final app */
-        new NavigateDriverToUserStub(mDriverLocation, mUserLocation, mDriver, new NavigateDriverToUserStub.DriverArrived() {
+        /* TODO: Remove this for final app */
+        mRefreshRequested = true;
+        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
+        new NavigateDriverToUserStub(mDriverLocation, mUserLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
             @Override
-            public void onDriverArrived() {
+            public void onDestinationReached() {
                 moveToDestState();
             }
         }).run();
+
+
     }
 
     private void moveToDestState() {
@@ -175,9 +179,9 @@ public class EnrouteCustomerState implements State {
             @Override
             public void run() {
                 showDriverArrived();
+                mRefreshRequested = false;
             }
         });
-        mRefreshRequested = false;
     }
 
     private void showDriverArrived() {
@@ -190,11 +194,6 @@ public class EnrouteCustomerState implements State {
 //                        changeState();
                     }
                 }).create().show();
-    }
-
-    private void updateDriverLocation() {
-        mRefreshRequested = true;
-//        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
     }
 
     private void showRoute() {
@@ -219,6 +218,18 @@ public class EnrouteCustomerState implements State {
         }
     }
 
+
+    @Override
+    public void exitState() {
+        if (mMarker != null) {
+            mMarker.remove();
+        }
+
+        if (mUserMarker != null) {
+            mUserMarker.remove();
+        }
+    }
+
     private class MyHandler extends Handler {
 
         MyHandler(Looper looper) {
@@ -232,13 +243,9 @@ public class EnrouteCustomerState implements State {
                     if (mRefreshRequested) {
                         fetchDriverPosition();
                         sendEmptyMessageDelayed(MSG_REFRESH_LOCATION, REFRESH_INTERVAL * 1000);
-                    } else {
-                        sendEmptyMessage(MSG_STOP_REFRESH_LOCATION);
                     }
                     break;
-                case MSG_STOP_REFRESH_LOCATION:
-                    break;
-                default :
+                default:
                     throw new UnsupportedOperationException("Can't handle");
             }
         }
@@ -249,24 +256,17 @@ public class EnrouteCustomerState implements State {
             @Override
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
-                    updateDriverLocation();
+                    updateDriverMarker();
                 } else {
-                    Log.e("EnrouteCustomerState", "Unable to update driver location");
+                    Log.e("Enroute", "Unable to update driver location");
                 }
             }
         });
     }
 
-
-    @Override
-    public void exitState() {
-        if (mMarker != null) {
-            mMarker.remove();
-        }
-
-        if (mUserMarker != null) {
-            mUserMarker.remove();
-        }
-        mRefreshRequested = false;
+    private void updateDriverMarker() {
+        ParseGeoPoint pnt = mDriver.getParseGeoPoint("currentLocation");
+        mDriverLocation = new LatLng(pnt.getLatitude(), pnt.getLongitude());
+        mMarker.setPosition(mDriverLocation);
     }
 }
