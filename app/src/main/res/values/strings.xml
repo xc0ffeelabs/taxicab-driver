@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TaxiCabDriver</string>
+    <string name="app_name">Chariot Driver</string>
     <string name="email_address">Email address</string>
     <string name="password">Password</string>
     <string name="signin">Sign In</string>
@@ -40,5 +40,5 @@
     <string name="driver_arrived">You are at pickup location.</string>
     <string name="driver_arrived_text">You reached user pickup loation. Look for User.</string>
     <string name="destination_reached_title">Reached destination</string>
-    <string name="destination_reached_text">You have arrived at your destination. Please pay the driver. Thanks.</string>
+    <string name="destination_reached_text">You have arrived at the destination. Get the payment from guest. Thanks.</string>
 </resources>

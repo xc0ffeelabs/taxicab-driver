@@ -21,7 +21,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.xc0ffeelabs.taxicabdriver.R;
@@ -212,7 +211,6 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
                 e.printStackTrace();
             }
 
-
         }
 
         if (mTrip == null && driverTripId != null) {
@@ -274,7 +272,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         return mDriver;
     }
 
-    public ParseObject getmTrip() {
+    public Trip getmTrip() {
         return mTrip;
     }
 

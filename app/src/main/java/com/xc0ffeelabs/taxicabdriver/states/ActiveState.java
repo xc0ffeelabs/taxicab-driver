@@ -66,7 +66,7 @@ public class ActiveState implements State {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             mMap.moveCamera(cameraUpdate);
-            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(latLng));
+            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi_pin)).position(latLng));
 
             mDriver.put(Driver.CURRENT_LOCATION, new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
             mDriver.saveInBackground();

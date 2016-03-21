@@ -1,13 +1,18 @@
 package com.xc0ffeelabs.taxicabdriver.activities;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.xc0ffeelabs.taxicabdriver.R;
@@ -27,6 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     @Bind(R.id.btn_signup) Button mBtnSignup;
     @Bind(R.id.pb_loading) View mPbLoading;
     @Bind(R.id.toolbar) Toolbar mToolBar;
+    @Bind(R.id.moving_car) ImageView movingCar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,10 @@ public class SignInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolBar);
+
+        mToolBar.setNavigationIcon(R.drawable.ic_chariot_logo_9);
+
+        animateCarMoving();
 
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +105,27 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             mPbLoading.setVisibility(View.GONE);
         }
+    }
+
+
+
+    private void animateCarMoving() {
+
+        BitmapDrawable bd=(BitmapDrawable) this.getResources().getDrawable(R.drawable.ic_sedan_car);
+        int iconWidth=bd.getBitmap().getWidth();
+        float deviceWidth = getDeviceWidth();
+
+        Log.d("Debug", "Icon WIdth" + iconWidth);
+        float animStopPixel = deviceWidth - iconWidth - 20;
+        ObjectAnimator carMoving = ObjectAnimator.ofFloat(movingCar, "x", -2000f, animStopPixel);
+        carMoving.setDuration(2500);
+        carMoving.setInterpolator(new DecelerateInterpolator());
+        carMoving.start();
+    }
+
+    private float getDeviceWidth() {
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return  displayMetrics.widthPixels ;
     }
 
     private void handleLoginSuccessfull(String name, String passwd) {

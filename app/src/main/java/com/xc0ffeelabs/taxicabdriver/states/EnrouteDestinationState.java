@@ -31,6 +31,9 @@ import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteDestinationControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.models.Location;
+import com.xc0ffeelabs.taxicabdriver.models.Trip;
+import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.network.GMapV2Direction;
 import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 import com.xc0ffeelabs.taxicabdriver.stubs.NavigateDriverToUserStub;
@@ -39,21 +42,21 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EnrouteDestinationState implements State {
 
+    private static final String TAG = EnrouteDestinationState.class.getSimpleName();
+
     private Marker mDstMarker;
     private LatLng mDstLocation;
 //    private NearbyDrivers mNearbyDrivers;
-    private volatile boolean mSortRequested = true;
-    protected List<Driver> mSortedUsers = new ArrayList<>();
     private MapActivity mActivity;
     private GoogleMap mMap;
     private GoogleApiClient mApiClient;
     private Driver mDriver;
-    private ParseObject mTrip;
+    private Trip mTrip;
+    private User mTripUser;
 
 
     private static EnrouteDestinationState mEnrouteDestinationState;
@@ -83,6 +86,7 @@ public class EnrouteDestinationState implements State {
         mApiClient = mActivity.getApiClient();
         mDriver = mActivity.getmDriver();
         mTrip = mActivity.getmTrip();
+        mTripUser = mActivity.getmTripUser();
         initialize();
     }
 
@@ -97,8 +101,8 @@ public class EnrouteDestinationState implements State {
         mDriver.saveInBackground();
 
 
-        if (mDriver == null || mTrip == null) {
-            Log.e("EnrouteDestination", "To initiate this state, driver object and trip are needed");
+        if (mDriver == null || mTripUser == null) {
+            Log.e(TAG, "To initiate this state, driver object and trip are needed");
             StateManager.getInstance().startState(StateManager.States.Active, null);
             return;
         }
@@ -113,18 +117,18 @@ public class EnrouteDestinationState implements State {
             @Override
             public void done(Object object, ParseException e) {
                 if (e == null) {
-                    Log.i("EnrouteDestination", "Driver assigned to the trip");
+                    Log.i(TAG, "Driver assigned to the trip");
                 } else {
-                    Log.e("EnrouteDestination", "Driver not assigned to the trip");
+                    Log.e(TAG, "Driver not assigned to the trip");
                 }
             }
 
             @Override
             public void done(Object o, Throwable throwable) {
                 if (throwable == null) {
-                    Log.i("EnrouteDestination", "Driver assigned to the trip");
+                    Log.i(TAG, "Driver assigned to the trip");
                 } else {
-                    Log.e("EnrouteDestination", "Driver not assigned to the trip");
+                    Log.e(TAG, "Driver not assigned to the trip");
                 }
             }
         });
@@ -163,32 +167,38 @@ public class EnrouteDestinationState implements State {
     }
 
     private void fetchTripObject() {
-        mTrip.fetchInBackground(new GetCallback<ParseObject>() {
+        mTripUser.fetchInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
                 if (e == null) {
-                    if (mTrip != null) {
+                    if (mTripUser != null) {
                         try {
-//                            ParseGeoPoint dstLocation = mTrip.getParseGeoPoint("destinationLocation");
-                            ParseGeoPoint dstLocation = new ParseGeoPoint(37.4064495, -121.9439531);
+                            Location dstLocation = mTripUser.getDestLocation();
                             mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(mDstLocation)
                                     .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
                             mDstMarker = mMap.addMarker(markerOptions);
                             zoomCamera();
+                            updateTripWithDestination();
                         } catch (Exception ex) {
                             ex.printStackTrace();
+                            Log.e(TAG, "Error while fetching destination location");
                         }
 
                     } else {
-                        throw new IllegalStateException("Cant find the User location to prepare directions map");
+                        Log.e(TAG, "Error while fetching destination location");
                     }
                 } else {
-                    Log.d("NAYAN", "SOmething wrong while fething. e = " + e.getMessage());
+                    Log.d(TAG, "SOmething wrong while fething. e = " + e.getMessage());
                 }
             }
         });
+    }
+
+    private void updateTripWithDestination() {
+        mTrip.setDestLocation(mDstLocation);
+        mTrip.saveInBackground();
     }
 
     private void zoomCamera() {
@@ -254,7 +264,7 @@ public class EnrouteDestinationState implements State {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //                        changeState();
-                        notifyUser();
+//                        notifyUser();
                     }
                 }).create().show();
     }
@@ -268,18 +278,18 @@ public class EnrouteDestinationState implements State {
             @Override
             public void done(Object object, ParseException e) {
                 if (e == null) {
-                    Log.i("EnrouteDestination", "Reached destination");
+                    Log.i(TAG, "Reached destination");
                 } else {
-                    Log.e("EnrouteDestination", "Error: "+ e.getMessage());
+                    Log.e(TAG, "Error: "+ e.getMessage());
                 }
             }
 
             @Override
             public void done(Object o, Throwable throwable) {
                 if (throwable == null) {
-                    Log.i("EnrouteDestination", "Reached destination");
+                    Log.i(TAG, "Reached destination");
                 } else {
-                    Log.e("EnrouteDestination", "Error: "+ throwable.getMessage());
+                    Log.e(TAG, "Error: "+ throwable.getMessage());
                 }
             }
         });
@@ -288,6 +298,7 @@ public class EnrouteDestinationState implements State {
 
     @Override
     public void exitState() {
+        notifyUser();
         mMap.clear();
         if (mMarker != null) {
             mMarker.remove();
@@ -329,7 +340,7 @@ public class EnrouteDestinationState implements State {
                 if (e == null) {
                     updateDriverMarker();
                 } else {
-                    Log.e("Enroute", "Unable to update driver location");
+                    Log.e(TAG, "Unable to update driver location");
                 }
             }
         });

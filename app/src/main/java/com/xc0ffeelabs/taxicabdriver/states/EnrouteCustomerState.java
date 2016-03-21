@@ -32,17 +32,20 @@ import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
 import com.xc0ffeelabs.taxicabdriver.fragments.EnrouteCustomerControlsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
+import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.network.GMapV2Direction;
 import com.xc0ffeelabs.taxicabdriver.services.LocationService;
 import com.xc0ffeelabs.taxicabdriver.stubs.NavigateDriverToUserStub;
 
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
 public class EnrouteCustomerState implements State {
+
+    private static final String TAG = EnrouteCustomerState.class.getSimpleName();
+
 
     private MapActivity mActivity;
     private GoogleMap mMap;
@@ -50,7 +53,7 @@ public class EnrouteCustomerState implements State {
     private Driver mDriver;
     private Marker mMarker;
     private Marker mUserMarker;
-    private ParseObject mTrip;
+    private Trip mTrip;
     private User mUser;
     private LatLng mUserLocation;
     private LatLng mDriverLocation;
@@ -94,7 +97,7 @@ public class EnrouteCustomerState implements State {
         mDriver.saveInBackground();
 
         if (mUser == null || mTrip == null) {
-            Log.e("EnrouteCustomerState", "To initiate this state, user object and trip are needed");
+            Log.e(TAG, "To initiate this state, user object and trip are needed");
             StateManager.getInstance().startState(StateManager.States.Active, null);
             return;
         }
@@ -112,10 +115,10 @@ public class EnrouteCustomerState implements State {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
         if (location != null) {
             mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
+            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi_pin)).position(mDriverLocation));
 
         } else {
-            throw new IllegalStateException("Driver location not found while preparing directions map");
+            Log.e(TAG, "Driver location not found while preparing directions map");
         }
 
     }
@@ -135,24 +138,27 @@ public class EnrouteCustomerState implements State {
                             @Override
                             public void done(ParseObject object, ParseException e) {
                                 if (e == null) {
-                                    mUserLocation = new LatLng(((com.xc0ffeelabs.taxicabdriver.models.Location)object).getLatitude(), ((com.xc0ffeelabs.taxicabdriver.models.Location)object).getLongitude());
+                                    mUserLocation = new LatLng(((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLatitude(), ((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLongitude());
                                     MarkerOptions markerOptions = new MarkerOptions()
                                             .position(mUserLocation)
                                             .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
                                     mUserMarker = mMap.addMarker(markerOptions);
                                     zoomCamera();
+                                    updateTripPickup();
                                 } else {
-                                    throw new IllegalStateException("Cant find the User location to prepare directions map");
+                                    e.printStackTrace();
+                                    Log.e(TAG, "Unable to fetch pickup location");
                                 }
                             }
                         });
 
 
                     } else {
-                        throw new IllegalStateException("Cant find the User location to prepare directions map");
+                        Log.e(TAG, "Unable to fetch pickup location");
                     }
                 } else {
-                    Log.d("NAYAN", "SOmething wrong while fething. e = " + e.getMessage());
+                    e.printStackTrace();
+                    Log.d(TAG, "SOmething wrong while fething. e = " + e.getMessage());
                 }
             }
         });
@@ -179,7 +185,11 @@ public class EnrouteCustomerState implements State {
             }
         }).run();
 
+    }
 
+    private void updateTripPickup() {
+        mTrip.setPickupLocation(mUserLocation, null);
+        mTrip.saveInBackground();
     }
 
     private void moveToDestState() {
@@ -268,7 +278,7 @@ public class EnrouteCustomerState implements State {
                 if (e == null) {
                     updateDriverMarker();
                 } else {
-                    Log.e("Enroute", "Unable to update driver location");
+                    Log.e(TAG, "Unable to update driver location");
                 }
             }
         });

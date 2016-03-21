@@ -23,6 +23,7 @@ public class User extends ParseUser {
     public static final String CAR_MODEL = "carModel";
     public static final String CAR_NUMBER = "carNumber";
     public static final String CURRENT_LOCATION = "currentLocation";
+    private static final String DEST_LOCATION = "destLocation";
     public static final String STATE = "state";
     public static final String PICKUP_LOCATION = "pickUpLocation";
 
@@ -127,6 +128,9 @@ public class User extends ParseUser {
         saveInBackground(callback);
     }
 
+    public Location getDestLocation() {
+        return (Location) get(DEST_LOCATION);
+    }
     public Location getPickupLocation() {
         return (Location)get(PICKUP_LOCATION);
     }
