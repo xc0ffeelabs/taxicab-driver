@@ -61,6 +61,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
             Intent mapsIntent = new Intent(context, MapActivity.class);
             mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(mapsIntent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     };
 
@@ -195,6 +196,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         TaxiDriverApplication.getAccountManager().logoutUser();
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
@@ -292,5 +294,11 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

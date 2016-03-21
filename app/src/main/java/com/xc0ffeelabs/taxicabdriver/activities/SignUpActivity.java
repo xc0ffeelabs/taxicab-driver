@@ -129,11 +129,18 @@ public class SignUpActivity extends AppCompatActivity {
         Log.d(TAG, "Driver signed up!");
         Intent mapIntent = new Intent(this, MapActivity.class);
         startActivity(mapIntent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
     private void signUpFailed() {
         Log.e(TAG, "Driver signup failed");
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

@@ -65,6 +65,7 @@ public class SignInActivity extends AppCompatActivity {
     private void onSignUpBtnClicked() {
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     private void onSignInBtnClicked() {
@@ -88,6 +89,7 @@ public class SignInActivity extends AppCompatActivity {
                 Log.d(TAG, "Driver logged in");
                 Intent mapIntent = new Intent(SignInActivity.this, MapActivity.class);
                 startActivity(mapIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
 
             @Override
@@ -129,5 +131,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void handleLoginSuccessfull(String name, String passwd) {
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

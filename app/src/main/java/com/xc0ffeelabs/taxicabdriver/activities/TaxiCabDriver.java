@@ -29,6 +29,7 @@ public class TaxiCabDriver extends AppCompatActivity {
     private void showLoginActivity() {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     private void showNoNetworkMessage() {
@@ -106,6 +107,7 @@ public class TaxiCabDriver extends AppCompatActivity {
         // Launch map activity here
         Intent mapIntent = new Intent(this, MapActivity.class);
         startActivity(mapIntent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
