@@ -333,6 +333,5 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         FragmentManager fm = getSupportFragmentManager();
         NotificationDialog rideRequest = NotificationDialog.newInstance("Title");
         rideRequest.show(fm, "fragment_edit_name");
-
     }
 }

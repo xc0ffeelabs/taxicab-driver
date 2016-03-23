@@ -68,7 +68,6 @@ public class EnrouteDestinationState implements State {
     private MyHandler mHandler = new MyHandler(Looper.getMainLooper());
 
 
-
     public static EnrouteDestinationState getInstance() {
         if (mEnrouteDestinationState == null) {
             mEnrouteDestinationState = new EnrouteDestinationState();
@@ -174,11 +173,13 @@ public class EnrouteDestinationState implements State {
                     if (mTripUser != null) {
                         try {
                             Location dstLocation = mTripUser.getDestLocation();
+                            dstLocation.fetchIfNeeded();
                             if (dstLocation != null && dstLocation.getLatitude() != 0 && dstLocation.getLongitude() != 0) {
                                 mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
                             } else {
                                 mDstLocation = new LatLng(37.4810289, -122.1565179);
                             }
+
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(mDstLocation)
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
