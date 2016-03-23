@@ -29,6 +29,7 @@ public class User extends ParseUser {
 
     public static final String USER_ROLE = "user";
     public static final String DRIVER_ROLE = "driver";
+    public static final String PROFILE_IMAGE = "profileImage";
 
     private String travelTimeText;
     private long travelTime;
@@ -94,6 +95,19 @@ public class User extends ParseUser {
 
     public LatLng getPosition() {
         return new LatLng(getLocation().getLatitude(), getLocation().getLongitude());
+    }
+
+    public String getProfileImage() {
+        String imageUrl = getString(PROFILE_IMAGE);
+        if (imageUrl != null && imageUrl.length() > 0) {
+            return imageUrl;
+        }
+        return null;
+//        return "https://randomuser.me/api/portraits/med/men/25.jpg";
+    }
+
+    public void setProfileImage(String profileImage) {
+        put(PROFILE_IMAGE, profileImage);
     }
 
     public String getTravelTimeText() {

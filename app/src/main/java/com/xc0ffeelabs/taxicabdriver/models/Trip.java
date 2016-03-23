@@ -13,9 +13,10 @@ import com.parse.SaveCallback;
 public class Trip extends ParseObject{
     private ParseUser user;
     private Driver driver;
-    private String tripStatus;
     public static final String PICKUP_LOCATION = "pickUpLocation";
     public static final String DEST_LOCATION = "destLocation";
+    private static final String STATUS = "status";
+    private static final String STATE = "state";
 
     public Trip() {
 
@@ -29,12 +30,21 @@ public class Trip extends ParseObject{
         this.user = user;
     }
 
-    public String getTripStatus() {
-        return tripStatus;
+    public String getStatus() {
+        return getString(STATUS);
     }
 
-    public void setTripStatus(String tripStatus) {
-        this.tripStatus = tripStatus;
+    public String getState() {
+        return getString(STATE);
+    }
+
+
+    public void setStatus(String status) {
+        put(Trip.STATUS, status);
+    }
+
+    public void setState(String state) {
+        put(Trip.STATE, state);
     }
 
     public Driver getDriver() {

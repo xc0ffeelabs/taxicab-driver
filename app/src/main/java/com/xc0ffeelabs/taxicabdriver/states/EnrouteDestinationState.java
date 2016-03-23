@@ -307,6 +307,10 @@ public class EnrouteDestinationState implements State {
         if (mDstMarker != null) {
             mDstMarker.remove();
         }
+
+        mTrip.setStatus("done");
+        mTrip.setState("driver-reached-destination");
+        mTrip.saveInBackground();
     }
 
 

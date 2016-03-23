@@ -1,9 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="192dp"
-    android:background="?attr/colorPrimaryDark"
+    android:background="@drawable/drawer_header_bg"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
+    android:id="@+id/navHeader"
     android:gravity="bottom">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:baselineAlignBottom="true"
+        android:id="@+id/profileImage"
+        android:src="@drawable/profile_avatar"
+        android:layout_marginLeft="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAlignBottom="true"
+        android:id="@+id/UserName"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAlignBottom="true"
+        android:id="@+id/email"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="20dp"/>
 </LinearLayout>

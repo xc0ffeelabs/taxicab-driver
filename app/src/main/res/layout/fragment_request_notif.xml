@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileImage"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/profileImage"
+        android:text="New request for ride. Can you pick the user?"
+        android:id="@+id/notificationText"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Accept"
+        android:id="@+id/acceptBtn"
+        android:layout_below="@id/notificationText"
+        android:layout_alignLeft="@id/notificationText"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deny"
+        android:id="@+id/denyBtn"
+        android:layout_below="@id/notificationText"
+        android:layout_alignRight="@id/notificationText"/>
+
+
+</RelativeLayout>

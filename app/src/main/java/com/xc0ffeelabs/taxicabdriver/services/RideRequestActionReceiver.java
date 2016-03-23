@@ -1,12 +1,15 @@
 package com.xc0ffeelabs.taxicabdriver.services;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -24,8 +27,11 @@ import java.util.List;
 /**
  * Created by skammila on 3/14/16.
  */
-public class AcceptRequestReceiver extends BroadcastReceiver {
-    private static final String ACCEPT_ACTION = "com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST";
+public class RideRequestActionReceiver extends BroadcastReceiver {
+    public static final String ACCEPT_ACTION = "com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST";
+    public static final String DENY_ACTION = "com.xc0ffeelabs.taxicabdriver.DENY_REQUEST";
+    public static final String AUTO_REMOVE_NOTIFCATION_ACTION = "com.xc0ffeelabs.taxicabdriver.AUTO_REMOVE_REQUEST_NOTIFICATION";
+
     @Override
     public void onReceive(final Context context, Intent intent) {
         Log.d("AcceptRequestReceiver", "In Accept handler");
@@ -34,11 +40,14 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
         final String tripId = bnd.getString("tripId");
         String driverId = bnd.getString("driverId");
         final String userId = bnd.getString("userId");
-        NotificationManager mNotificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(DriverNotificationReceiver.NOTIFICATION_ID);
+
 
         if(ACCEPT_ACTION.equals(action)) {
+            NotificationManager mNotificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(DriverNotificationReceiver.NOTIFICATION_ID);
+
+            //accept request
             try {
                 Log.d("AcceptRequestReceiver", "TripId " + tripId + "driver id = " + driverId);
 
@@ -65,6 +74,27 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (DENY_ACTION.equals(action)) {
+            NotificationManager mNotificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(DriverNotificationReceiver.NOTIFICATION_ID);
+
+            //perform deny
+            try {
+                Log.d("Debug", "Deny TripId "+ tripId);
+                ParseQuery tripQ = ParseQuery.getQuery("Trip");
+                ParseObject trip = tripQ.get(tripId);
+                trip.put("status", "driver-notfound");
+                trip.put("state", "driver-denied-trip-request");
+                trip.saveInBackground();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (AUTO_REMOVE_NOTIFCATION_ACTION.equals(action)) {
+            //cancel ride request
+            NotificationManager mNotificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(DriverNotificationReceiver.NOTIFICATION_ID);
         }
     }
 
@@ -93,5 +123,16 @@ public class AcceptRequestReceiver extends BroadcastReceiver {
         intent.putExtra("tripId", tripId);
         intent.putExtra("tripUserId", userId);
         broadcastManager.sendBroadcast(intent);
+    }
+
+    //Function to set alarm for auto cancel
+    public static void setAutocancelAlarm(Context context) {
+        AlarmManager alarmMgr =
+                (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(AUTO_REMOVE_NOTIFCATION_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() +
+                        30 * 1000,
+                pendingIntent);
     }
 }

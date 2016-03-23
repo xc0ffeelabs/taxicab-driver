@@ -5,33 +5,34 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <permission android:name="android.permission.ACCESS_FINE_LOCATION" android:protectionLevel="dangerous"/>
-    <permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:protectionLevel="dangerous"/>
+    <permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:protectionLevel="dangerous" />
 
-    <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <!--
-      IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
-      to match your app's package name + ".permission.C2D_MESSAGE".
-    -->
-    <permission android:protectionLevel="signature"
-        android:name="com.xc0ffeelabs.taxicabdriver.permission.C2D_MESSAGE" />
+    <permission
+        android:name="com.xc0ffeelabs.taxicabdriver.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="com.xc0ffeelabs.taxicabdriver.permission.C2D_MESSAGE" />
 
     <application
         android:name=".activities.TaxiDriverApplication"
         android:allowBackup="true"
+        android:icon="@drawable/ic_chariot_logo_red"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:icon="@drawable/ic_chariot_logo_8"
         android:theme="@style/AppTheme" >
         <activity android:name=".activities.TaxiCabDriver" >
             <intent-filter>
@@ -41,33 +42,37 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SignInActivity" />
-        <activity android:name=".activities.NotificationActivity" />
         <activity android:name=".activities.SignUpActivity" />
         <activity android:name=".activities.MapActivity" />
-        <activity android:name=".activities.MapActivity" />
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDS4GAwSpVgPOQpDiTwNxeSSpMotTP-9WQ" />
 
+            android:value="AIzaSyA6K93u9V37hUZFiT49NLe6UdqhAafro1Y"/>
+
+            <!--android:value="AIzaSyDS4GAwSpVgPOQpDiTwNxeSSpMotTP-9WQ" />-->
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
-            android:value="id:960181148606"/>
+            android:value="id:960181148606" />
 
-
-
-        <service android:name=".services.LocationService"/>
+        <service android:name=".services.LocationService" />
         <service android:name="com.parse.PushService" />
-        <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver"
-            android:exported="false">
+
+        <receiver
+            android:name=".services.DriverNotificationReceiver"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
                 <action android:name="com.parse.push.intent.DELETE" />
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -75,23 +80,19 @@
                 <category android:name="com.xc0ffeelabs.taxicabdriver" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.DenyRequestReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.xc0ffeelabs.taxicabdriver.DENY_REQUEST" />
-                <category android:name="com.xc0ffeelabs.taxicabdriver" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.xc0ffeelabs.taxicabdriver.services.AcceptRequestReceiver"
-            android:exported="false">
+        <receiver
+            android:name=".services.RideRequestActionReceiver"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.xc0ffeelabs.taxicabdriver.ACCEPT_REQUEST" />
+                <action android:name="com.xc0ffeelabs.taxicabdriver.DENY_REQUEST" />
+                <action android:name="com.xc0ffeelabs.taxicabdriver.AUTO_REMOVE_REQUEST_NOTIFICATION" />
+
                 <category android:name="com.xc0ffeelabs.taxicabdriver" />
             </intent-filter>
         </receiver>
 
+
     </application>
-
-
 
 </manifest>

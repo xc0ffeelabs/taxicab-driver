@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,8 +26,10 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.squareup.picasso.Picasso;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
+import com.xc0ffeelabs.taxicabdriver.fragments.NotificationDialog;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.models.User;
@@ -34,9 +39,6 @@ import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Created by skammila on 3/17/16.
- */
 
 public class MapActivity extends AppCompatActivity implements MapsFragment.MapReady{
 
@@ -61,7 +63,13 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
             Intent mapsIntent = new Intent(context, MapActivity.class);
             mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(mapsIntent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+    };
+
+    private BroadcastReceiver rideRequstreceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showRequestNotificationFragment();
         }
     };
 
@@ -94,6 +102,9 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
 
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
                 new IntentFilter(DriverNotificationReceiver.ACCEPT_REQUEST_LAUNCH_MAP));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(rideRequstreceiver,
+                new IntentFilter(DriverNotificationReceiver.RIDE_REQUEST_LAUNCH_MAP));
     }
 
     @Override
@@ -103,6 +114,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         if (mIsMapReady) {
             initiateDriverState();
         }
+        setupTripInfo(getIntent());
     }
 
     private void registerUserWithParseInstallation() {
@@ -123,6 +135,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
+
     }
 
     private void selectDrawerItem(MenuItem item) {
@@ -169,6 +182,17 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
             //Driver not found. So go back to SignIn screen
             Log.e("MapActivity", "Driver not found");
             finish();
+        } else {
+            String imageUrl = mDriver.getProfileImage();
+            ImageView iv = (ImageView)mNavView.getHeaderView(0).findViewById(R.id.profileImage);
+            if (imageUrl!=null) {
+                Picasso.with(this).load(imageUrl).into(iv);
+            }
+            TextView name = (TextView)mNavView.getHeaderView(0).findViewById(R.id.UserName);
+            name.setText(mDriver.getName());
+
+            TextView email = (TextView)mNavView.getHeaderView(0).findViewById(R.id.email);
+            email.setText(mDriver.getEmail());
         }
     }
 
@@ -294,11 +318,20 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(rideRequstreceiver);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+
+    private void showRequestNotificationFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        NotificationDialog rideRequest = NotificationDialog.newInstance("Title");
+        rideRequest.show(fm, "fragment_edit_name");
+
     }
 }

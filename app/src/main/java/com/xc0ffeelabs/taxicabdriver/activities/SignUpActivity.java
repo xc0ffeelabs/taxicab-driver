@@ -44,6 +44,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolBar);
 
+        mToolBar.setNavigationIcon(R.drawable.ic_chariot_logo_9);
+
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

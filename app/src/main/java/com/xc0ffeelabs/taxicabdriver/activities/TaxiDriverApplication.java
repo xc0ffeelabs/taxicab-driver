@@ -16,8 +16,11 @@ import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 public class TaxiDriverApplication extends Application {
 
-    private static final String APP_ID = "gotaxi";
-    private static final String PARSE_URL = "https://gotaxi.herokuapp.com/parse/";
+//    private static final String APP_ID = "gotaxi";
+//    private static final String PARSE_URL = "https://gotaxi.herokuapp.com/parse/";
+
+    private static final String APP_ID = "chariottaxi";
+    private static final String PARSE_URL = "https://chariottaxi.herokuapp.com/parse/";
 
     private static TaxiDriverApplication mApp;
 
@@ -54,6 +57,8 @@ public class TaxiDriverApplication extends Application {
                 .addNetworkInterceptor(new ParseLogInterceptor())
                 .server(PARSE_URL).build());
         ParseInstallation.getCurrentInstallation().saveInBackground();
+
+//        setupData();
     }
 
     public SecurePreferences getSecureSharedPreferences() {
@@ -63,4 +68,98 @@ public class TaxiDriverApplication extends Application {
         }
         return mSecurePrefs;
     }
+
+
+    /**
+     * Data Setup Functions. Dont delete
+     */
+
+//    private void setupData() {
+//        setUpUserData();
+//        setUpDriverData();
+//    }
+//
+//    public void setUpUserData(){
+//        String names[] = {"Erick Ferencz", "Dyan Oldroyd", "Blair Malet", "Karl Nowski", "Penney Weight"};
+//        String emails[] = {"erick@gmail.com", "dyan@gmail.com", "blair@gmail.com", "karl@gmail.com", "penney@gmail.com"};
+//        String phones[] = {"2349874563", "345671234", "34514567", "4567890123", "3425678190"};
+//        String picUrl = "https://randomuser.me/api/portraits/med/men/"; // 1.jpg
+//        String pictureUrls[] = {picUrl+"1.jpg", picUrl+ "2.jpg", picUrl+"3.jpg", picUrl+"4.jpg", picUrl+"5.jpg"};
+//
+//
+//        for (int i=0; i< 5; i++) {
+//            try {
+//                createUser(names[i], phones[i], emails[i], "password", pictureUrls[i], null);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
+//
+//    public void setUpDriverData(){
+//        String names[] = {"Lai Gato", "Herman Demesa", "Howard Paulas", "Daren Weirather", "Karan Karpin"};
+//        String emails[] = {"lai@gmail.com", "herman@gmail.com", "howard@gmail.com", "daren@gmail.com", "karan@gmail.com"};
+//        String phones[] = {"2349874563", "345671234", "34514567", "4567890123", "3425678190"};
+//        String picUrl = "https://randomuser.me/api/portraits/med/men/"; // 1.jpg
+//        String pictureUrls[] = {picUrl+"6.jpg", picUrl+ "7.jpg", picUrl+"8.jpg", picUrl+"9.jpg", picUrl+"10.jpg"};
+//
+//
+//        for (int i=0; i< 5; i++) {
+//            try {
+//                createDriver(names[i], phones[i], emails[i], pictureUrls[i], "password", "126723cab1234", "honda", "3we245");
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    private void createUser(String name, String phone, String email, String password, String profileImageUrl, SaveCallback cb) throws ParseException {
+//
+//        final User user = (User)ParseObject.create("_User");
+////        User user = new User();
+//        user.setRole(User.USER_ROLE);
+//        user.setName(name);
+//        user.setPhone(phone);
+//        user.setEmail(email);
+//        user.setPassword(password);
+//        user.put("profileImage", profileImageUrl);
+//        user.setUsername(email);
+//        user.signUp();
+//        user.signUpInBackground(new SignUpCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                try {
+//                    user.save();
+//                } catch (ParseException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+//
+//    private void createDriver(String name, String phone, String email, String profileImageUrl,  String password, String licenseNumber, String carModel, String carNumber ) throws ParseException {
+//        final Driver user = (Driver)ParseObject.create("_User");
+//        user.setRole(User.DRIVER_ROLE);
+//        user.setName(name);
+//        user.setPhone(phone);
+//        user.setEmail(email);
+//        user.setPassword(password);
+//        user.setLicense(licenseNumber);
+//        user.setCarModel(carModel);
+//        user.setCarNumber(carNumber);
+//        user.put("profileImage", profileImageUrl);
+//        user.setUsername(email);
+//        user.signUp();
+//        user.signUpInBackground(new SignUpCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                try {
+//                    user.save();
+//                } catch (ParseException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 }
