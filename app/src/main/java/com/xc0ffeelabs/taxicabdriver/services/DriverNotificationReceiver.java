@@ -6,8 +6,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -19,8 +17,6 @@ import com.xc0ffeelabs.taxicabdriver.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Iterator;
 
 /**
@@ -103,6 +99,25 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
 //            return;
 //        }
 
+        //destination
+        User user = null;
+        String locationAddress = null;
+        String userName = null;
+        String message = "User requesting for ride. Can you take this ride?";
+        try {
+            user = (User)ParseUser.getQuery().include("destLocation").get(datavalue.getString("userId"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (user != null) {
+            locationAddress = user.getDestLocation().getText();
+            userName = user.getName();
+        }
+
+        if (locationAddress != null && userName != null) {
+            message = userName + " is requesting for a ride to " + locationAddress + ". Can you pick " + locationAddress + "?";
+        }
+
 
         //create a notification
 
@@ -121,33 +136,17 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
         requestAcceptInt.putExtra("userId", datavalue.getString("userId"));
         PendingIntent pendingIntentAccept = PendingIntent.getBroadcast(context, rnd, requestAcceptInt, Intent.FILL_IN_DATA);
 
-        Bitmap image = null;
-        try {
-            User user = (User)ParseUser.getQuery().get(datavalue.getString("userId"));
-            if (user != null && user.getProfileImage() != null) {
-                URL url = null;
-                url = new URL(user.getProfileImage());
-                image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            }
-        } catch (ParseException p) {
-            p.printStackTrace();
-        } catch (IOException io) {
-                io.printStackTrace();
-        }
-
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_chariot_logo_9)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(datavalue.getString("text")))
-                .setContentTitle("Request")
-                .setContentText("Request for Pickup")
+                        .bigText(message))
+                .setContentTitle("Ride request")
+                .setContentText("Request for ride")
                 .setPriority(Notification.PRIORITY_MAX)
                 .addAction(R.drawable.thumbs_up, "Accept", pendingIntentAccept)
                 .addAction(R.drawable.thumb_down_sm, "Deny", pendingIntentDeny);
-        if (image != null) {
-            mBuilder.setLargeIcon(image);
-        }
+
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 

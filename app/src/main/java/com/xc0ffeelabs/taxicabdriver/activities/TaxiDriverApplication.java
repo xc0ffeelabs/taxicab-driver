@@ -19,9 +19,11 @@ public class TaxiDriverApplication extends Application {
 //    private static final String APP_ID = "gotaxi";
 //    private static final String PARSE_URL = "https://gotaxi.herokuapp.com/parse/";
 
-    private static final String APP_ID = "chariottaxi";
-    private static final String PARSE_URL = "https://chariottaxi.herokuapp.com/parse/";
+//    private static final String APP_ID = "chariottaxi";
+//    private static final String PARSE_URL = "https://chariottaxi.herokuapp.com/parse/";
 
+    private static final String APP_ID = "chariotapp";
+    private static final String PARSE_URL = "https://chariotapp.herokuapp.com/parse/";
     private static TaxiDriverApplication mApp;
 
     private SecurePreferences mSecurePrefs;
@@ -161,5 +163,28 @@ public class TaxiDriverApplication extends Application {
 //                }
 //            }
 //        });
+//    }
+//
+//
+//    private void setupTripHistory() throws ParseException {
+//        String userEmails[] = {"erick@gmail.com", "dyan@gmail.com", "blair@gmail.com", "karl@gmail.com", "penney@gmail.com"};
+//        String driverEmails[] = {"lai@gmail.com", "herman@gmail.com", "howard@gmail.com", "daren@gmail.com", "karan@gmail.com"};
+//        String sourceAddress[] = {"1 Facebook Way, Menlo Park, CA", "Googleplex, Amphitheatre Parkway, Mountain View, CA", "Microsoft SVC Building 1, La Avenida Street, Mountain View, CA"};
+//        String destinationAddress[] = {"Apple Campus, Cupertino, CA", "LinkedIn, Stierlin Court, Mountain View, CA", "Twitter HQ, Market Street, San Francisco, CA"};
+//
+//        for(int i=0 ; i<userEmails.length; i++){
+//            User user = (User)ParseUser.getQuery().whereEqualTo("email", userEmails[i]).find();
+//            if (user!=null){
+//                for(int j=0; j<driverEmails.length; j++) {
+//                    Driver driver = (Driver)ParseUser.getQuery().whereEqualTo("email", driverEmails[i]).find();
+//                    if (driver!=null) {
+//                        for (int k=0; k<sourceAddress.length; k++) {
+//                            //get source and destination address then post trip data
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
 //    }
 }

@@ -102,9 +102,12 @@ public class EnrouteCustomerState implements State {
             return;
         }
 
+        updateTripPickup();
+
         //set controls
+        EnrouteCustomerControlsFragment fm = EnrouteCustomerControlsFragment.newInstance(mUser);
         FragmentTransaction ft = mActivity.getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fmControls, EnrouteCustomerControlsFragment.newInstance(), "enroutecustomercontrols");
+        ft.replace(R.id.fmControls, fm, "enroutecustomercontrols");
         ft.commitAllowingStateLoss();
 
         addDriverMarker();
@@ -115,7 +118,7 @@ public class EnrouteCustomerState implements State {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
         if (location != null) {
             mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.taxi_pin)).position(mDriverLocation));
+            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(mDriverLocation));
 
         } else {
             Log.e(TAG, "Driver location not found while preparing directions map");
@@ -141,7 +144,7 @@ public class EnrouteCustomerState implements State {
                                     mUserLocation = new LatLng(((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLatitude(), ((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLongitude());
                                     MarkerOptions markerOptions = new MarkerOptions()
                                             .position(mUserLocation)
-                                            .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
                                     mUserMarker = mMap.addMarker(markerOptions);
                                     zoomCamera();
                                     updateTripPickup();
@@ -189,6 +192,7 @@ public class EnrouteCustomerState implements State {
 
     private void updateTripPickup() {
         mTrip.setPickupLocation(mUserLocation, null);
+//        mTrip.set("pickUpLocationString", mUserLocation);
         mTrip.saveInBackground();
     }
 

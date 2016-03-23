@@ -1,17 +1,21 @@
 package com.xc0ffeelabs.taxicabdriver.fragments;
 
 import android.os.Bundle;
+import android.view.View;
 
+import com.squareup.picasso.Picasso;
 import com.xc0ffeelabs.taxicabdriver.activities.TaxiDriverApplication;
+import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 public class EnrouteCustomerControlsFragment extends ControlsFragment {
+    private User user;
 
 
 
     private static EnrouteCustomerControlsFragment mEnrouteCustomerControlsFragment = null;
 
-    public static EnrouteCustomerControlsFragment newInstance() {
+    public static EnrouteCustomerControlsFragment newInstance(User user) {
         if (mEnrouteCustomerControlsFragment == null) {
             mEnrouteCustomerControlsFragment = new EnrouteCustomerControlsFragment();
         }
@@ -22,6 +26,8 @@ public class EnrouteCustomerControlsFragment extends ControlsFragment {
                 TaxiDriverApplication.getStateManager().startState(StateManager.States.EnrouteDestination, null);
             }
         });
+
+        mEnrouteCustomerControlsFragment.user = user;
 
 
         return mEnrouteCustomerControlsFragment;
@@ -34,6 +40,22 @@ public class EnrouteCustomerControlsFragment extends ControlsFragment {
         mEnrouteCustomerControlsFragment.setPrimaryButtonText("Reached Customer?");
         //current status is active.
         mEnrouteCustomerControlsFragment.setStatusText("Go pickup customer...");
+        showContactCard(user.getName(), user.getDestLocation().getText(), user.getProfileImage());
+    }
+
+    public void showContactCard(String name, String location, String imageUrl) {
+        contactCard.setVisibility(View.VISIBLE);
+        userName.setText(name);
+        if (location != null) {
+            destLoc.setText(location);
+        }
+        if (imageUrl != null) {
+            Picasso.with(getContext()).load(imageUrl).into(userImage);
+        }
+    }
+
+    public void hideContactCard(String name, String location) {
+        contactCard.setVisibility(View.GONE);
     }
 
     @Override

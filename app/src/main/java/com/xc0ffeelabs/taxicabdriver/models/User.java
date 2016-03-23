@@ -2,6 +2,7 @@ package com.xc0ffeelabs.taxicabdriver.models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -98,12 +99,16 @@ public class User extends ParseUser {
     }
 
     public String getProfileImage() {
-        String imageUrl = getString(PROFILE_IMAGE);
+        String imageUrl = null;
+        try {
+            imageUrl = fetchIfNeeded().getString(PROFILE_IMAGE);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (imageUrl != null && imageUrl.length() > 0) {
             return imageUrl;
         }
         return null;
-//        return "https://randomuser.me/api/portraits/med/men/25.jpg";
     }
 
     public void setProfileImage(String profileImage) {

@@ -73,12 +73,14 @@ public class InactiveState implements State {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             mMap.moveCamera(cameraUpdate);
-            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add)).position(latLng));
+            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(latLng));
         }
     }
 
     @Override
     public void exitState() {
-        mMarker.remove();
+        if (mMarker != null) {
+            mMarker.remove();
+        }
     }
 }

@@ -62,6 +62,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         public void onReceive(Context context, Intent intent) {
             Intent mapsIntent = new Intent(context, MapActivity.class);
             mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            setupTripInfo(intent);
             startActivity(mapsIntent);
         }
     };

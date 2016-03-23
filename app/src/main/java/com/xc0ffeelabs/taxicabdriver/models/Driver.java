@@ -1,6 +1,7 @@
 package com.xc0ffeelabs.taxicabdriver.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 
 @ParseClassName("_User")
     public class Driver extends User {
@@ -44,7 +45,12 @@ import com.parse.ParseClassName;
     }
 
     public String getName() {
-        return getString(NAME);
+        try {
+            return fetchIfNeeded().getString(NAME);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getEmail() {

@@ -158,7 +158,7 @@ public class EnrouteDestinationState implements State {
         /*TODO Remove for final APP    */
         ParseGeoPoint pnt = mDriver.getParseGeoPoint("currentLocation");
         mDriverLocation = new LatLng(pnt.getLatitude(), pnt.getLongitude());
-        mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
+        mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(mDriverLocation));
 
     }
 
@@ -174,10 +174,14 @@ public class EnrouteDestinationState implements State {
                     if (mTripUser != null) {
                         try {
                             Location dstLocation = mTripUser.getDestLocation();
-                            mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
+                            if (dstLocation != null && dstLocation.getLatitude() != 0 && dstLocation.getLongitude() != 0) {
+                                mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
+                            } else {
+                                mDstLocation = new LatLng(37.4810289, -122.1565179);
+                            }
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(mDstLocation)
-                                    .icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_input_add));
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
                             mDstMarker = mMap.addMarker(markerOptions);
                             zoomCamera();
                             updateTripWithDestination();
@@ -308,9 +312,14 @@ public class EnrouteDestinationState implements State {
             mDstMarker.remove();
         }
 
+        //clear the trip status
         mTrip.setStatus("done");
         mTrip.setState("driver-reached-destination");
         mTrip.saveInBackground();
+
+        //clear trip info from driver
+        mDriver.remove("driver_currentTripId");
+        mDriver.saveInBackground();
     }
 
 

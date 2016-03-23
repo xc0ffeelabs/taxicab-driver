@@ -6,22 +6,69 @@
     android:orientation="vertical"
     tools:context="com.xc0ffeelabs.taxicabdriver.fragments.ControlsFragment">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:id="@+id/contactCard"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/userImage"
+            android:src="@drawable/profile_avatar"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp"
+            android:id="@+id/userName"
+            android:layout_toRightOf="@id/userImage"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp"
+            android:id="@+id/destLoc"
+            android:layout_toRightOf="@id/userImage"
+            android:layout_below="@id/userName"
+            />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+
+            android:src="@drawable/phone"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_horizontal|center_vertical"
         android:text="@string/activeStatusText"
         android:background="@color/colorPrimary"
         android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-light"
+        android:elevation="5dp"
         android:id="@+id/tvStatus"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Go Inactive"
-        android:layout_above="@id/tvStatus"
+        android:layout_marginBottom="5dp"
+        android:padding="20dp"
+        android:background="@drawable/rounded_button"
+        android:textColor="@color/white"
+        android:includeFontPadding="false"
         android:layout_centerHorizontal="true"
+        android:layout_above="@id/tvStatus"
         android:id="@+id/primaryBtn"/>
 
 

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xc0ffeelabs.taxicabdriver.R;
@@ -23,6 +25,10 @@ public class ControlsFragment extends Fragment {
 
     @Bind(R.id.primaryBtn) Button primaryBtn;
     @Bind(R.id.tvStatus) TextView tvStatus;
+    @Bind(R.id.contactCard) RelativeLayout contactCard;
+    @Bind(R.id.userImage) ImageView userImage;
+    @Bind(R.id.userName) TextView userName;
+    @Bind(R.id.destLoc) TextView destLoc;
 
     public void setControlsInteraction(ControlsInteraction listener) {
         mListener = listener;
