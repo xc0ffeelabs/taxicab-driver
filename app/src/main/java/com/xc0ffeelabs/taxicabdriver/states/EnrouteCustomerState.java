@@ -191,8 +191,14 @@ public class EnrouteCustomerState implements State {
     }
 
     private void updateTripPickup() {
-        mTrip.setPickupLocation(mUserLocation, null);
-//        mTrip.set("pickUpLocationString", mUserLocation);
+        try {
+            mUser.fetchIfNeeded();
+            mUser.getPickupLocation().fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String location = mUser.getPickupLocation().getText();
+        mTrip.put("pickUpLocationString", location);
         mTrip.saveInBackground();
     }
 

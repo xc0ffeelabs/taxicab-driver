@@ -185,7 +185,7 @@ public class EnrouteDestinationState implements State {
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
                             mDstMarker = mMap.addMarker(markerOptions);
                             zoomCamera();
-                            updateTripWithDestination();
+                            updateTripDest();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             Log.e(TAG, "Error while fetching destination location");
@@ -201,10 +201,21 @@ public class EnrouteDestinationState implements State {
         });
     }
 
-    private void updateTripWithDestination() {
-        mTrip.setDestLocation(mDstLocation);
+    private void updateTripDest() {
+        try {
+            mTripUser.getDestLocation().fetchIfNeeded();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String location = mTripUser.getDestLocation().getText();
+        mTrip.put("destLocationString", location);
         mTrip.saveInBackground();
     }
+
+//    private void updateTripWithDestination() {
+//        mTrip.setDestLocation(mDstLocation);
+//        mTrip.saveInBackground();
+//    }
 
     private void zoomCamera() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
