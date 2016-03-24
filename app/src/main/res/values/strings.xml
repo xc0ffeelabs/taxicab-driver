@@ -23,6 +23,9 @@
     <string name="lbltitle">Title</string>
     <string name="lbltext">Text</string>
     <string name="title_logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="profile">Profile</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="logout_conf">Logout</string>
