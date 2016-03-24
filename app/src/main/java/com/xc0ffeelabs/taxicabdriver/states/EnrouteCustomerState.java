@@ -144,7 +144,7 @@ public class EnrouteCustomerState implements State {
                                     mUserLocation = new LatLng(((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLatitude(), ((com.xc0ffeelabs.taxicabdriver.models.Location) object).getLongitude());
                                     MarkerOptions markerOptions = new MarkerOptions()
                                             .position(mUserLocation)
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_blue));
                                     mUserMarker = mMap.addMarker(markerOptions);
                                     zoomCamera();
                                     updateTripPickup();

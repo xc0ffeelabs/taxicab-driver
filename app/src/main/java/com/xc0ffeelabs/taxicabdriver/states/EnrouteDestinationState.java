@@ -182,7 +182,7 @@ public class EnrouteDestinationState implements State {
 
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(mDstLocation)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_green));
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_blue));
                             mDstMarker = mMap.addMarker(markerOptions);
                             zoomCamera();
                             updateTripDest();
@@ -252,8 +252,7 @@ public class EnrouteDestinationState implements State {
     private void drawRoute(Document doc) {
         if (doc != null) {
             ArrayList<LatLng> directionPoint = GMapV2Direction.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(10).color(
-                    Color.BLUE);
+            PolylineOptions rectLine = new PolylineOptions().width(10).color(Color.parseColor("#4285f4"));
 
             for (int i = 0; i < directionPoint.size(); i++) {
                 rectLine.add(directionPoint.get(i));
