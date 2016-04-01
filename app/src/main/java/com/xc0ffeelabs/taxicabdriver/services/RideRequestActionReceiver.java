@@ -84,7 +84,7 @@ public class RideRequestActionReceiver extends BroadcastReceiver {
                 Log.d("Debug", "Deny TripId "+ tripId);
                 ParseQuery tripQ = ParseQuery.getQuery("Trip");
                 ParseObject trip = tripQ.get(tripId);
-                trip.put("status", "driver-notfound");
+                trip.put("status", "driver-denied");
                 trip.put("state", "driver-denied-trip-request");
                 trip.saveInBackground();
             } catch (Exception e) {

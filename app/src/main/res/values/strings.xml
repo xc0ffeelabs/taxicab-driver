@@ -44,4 +44,7 @@
     <string name="driver_arrived_text">You reached user pickup loation. Look for User.</string>
     <string name="destination_reached_title">Reached destination</string>
     <string name="destination_reached_text">You have arrived at the destination. Get the payment from guest. Thanks.</string>
+    <string name="debug_mode_summ">Only for testing and demo purpose. Dont enable for production.</string>
+    <string name="enable_debug_mode">Enable Debug Mode</string>
+    <string name="action_settings">Settings</string>
 </resources>

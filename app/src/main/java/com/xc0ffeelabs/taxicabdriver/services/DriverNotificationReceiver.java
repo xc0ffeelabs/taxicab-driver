@@ -110,11 +110,11 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
             e.printStackTrace();
         }
         if (user != null) {
-            try {
-                user.getDestLocation().fetchIfNeeded();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                user.getDestLocation().fetchIfNeeded();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
             locationAddress = user.getDestLocation().getText();
             userName = user.getName();
         }

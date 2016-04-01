@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.squareup.picasso.Picasso;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
 import com.xc0ffeelabs.taxicabdriver.fragments.NotificationDialog;
+import com.xc0ffeelabs.taxicabdriver.fragments.SettingsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.models.User;
@@ -56,6 +60,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     private Trip mTrip;
     private User mTripUser;
     private boolean mIsMapReady = false;
+    private boolean debugMode;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -90,6 +95,8 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         setupTripInfo(getIntent());
 
 //        setupInitialState();
+
+        setupDebugState();
 
         TaxiDriverApplication.getStateManager().setActivity(this);
 
@@ -197,6 +204,11 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         }
     }
 
+    private void setupDebugState() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        debugMode = sharedPref.getBoolean("debug_mode", false);
+    }
+
 //    private void setupInitialState() {
 //        String state = mDriver.getString(Driver.STATE);
 //        if (state==null || state.length()<0) state= DriverStates.INACTIVE;
@@ -210,7 +222,19 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+            //show settings fragment
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fmMap, new SettingsFragment()).commit();
+        }
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -333,5 +357,9 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         FragmentManager fm = getSupportFragmentManager();
         NotificationDialog rideRequest = NotificationDialog.newInstance("Title");
         rideRequest.show(fm, "fragment_edit_name");
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
     }
 }

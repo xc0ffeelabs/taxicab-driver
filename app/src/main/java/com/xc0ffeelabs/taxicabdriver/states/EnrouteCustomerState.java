@@ -89,8 +89,12 @@ public class EnrouteCustomerState implements State {
 
     private void initialize() {
 
-        /* TODO: Remove this in final app */
-        mActivity.stopService(new Intent(mActivity, LocationService.class));
+//        if (mActivity.isDebugMode()) {
+            /* TODO: Remove this in final app */
+            mActivity.stopService(new Intent(mActivity, LocationService.class));
+//        }
+
+
 
         //update driver state
         mDriver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());

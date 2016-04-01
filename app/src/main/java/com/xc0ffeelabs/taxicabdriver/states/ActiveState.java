@@ -83,7 +83,10 @@ public class ActiveState implements State {
         if (mMarker != null) {
             mMarker.remove();
         }
-        /* TODO: Remove this in final app */
-        mActivity.stopService(new Intent(mActivity, LocationService.class));
+//        if(mActivity.isDebugMode()) {
+            /* TODO: Remove this in final app */
+            mActivity.stopService(new Intent(mActivity, LocationService.class));
+//        }
+
     }
 }
