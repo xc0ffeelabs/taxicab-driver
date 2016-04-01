@@ -18,10 +18,11 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:alpha="0.6"
         android:scaleType="fitXY"
         android:src="@drawable/checker"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:paddingBottom="30dp"
         android:id="@+id/checker"/>
 </RelativeLayout>

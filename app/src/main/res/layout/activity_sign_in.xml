@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="40dp"
             android:paddingLeft="40dp"
+            android:layout_marginTop="50dp"
             android:id="@+id/login_details"
             android:layout_below="@id/toolbar">
             <android.support.design.widget.TextInputLayout
@@ -110,9 +111,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_fb_login_btn"
+            android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
             android:layout_below="@id/login_details"
             android:id="@+id/fb_login"
             />
@@ -121,24 +121,25 @@
 
 
         <ImageView
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_sedan_car"
-            android:baselineAlignBottom="true"
-
+            android:layout_alignParentBottom="true"
+            android:alpha="0.8"
+            android:paddingBottom="50dp"
             android:id="@+id/moving_car"/>
 
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:alpha="0.6"
             android:scaleType="fitXY"
-            android:baselineAlignBottom="true"
-            android:layout_alignBottom="@id/moving_car"
             android:adjustViewBounds="true"
             android:src="@drawable/checker"
             android:id="@+id/checker"
-            android:layout_below="@id/moving_car"
+            android:layout_alignBottom="@id/moving_car"
+            android:paddingBottom="30dp"
             />
 
 
