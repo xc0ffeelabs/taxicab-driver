@@ -6,15 +6,15 @@
     android:layout_height="match_parent">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="65dp"
-        android:alpha="0.2"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp"
-        android:background="@drawable/layout_roundedcorner"
-        ></RelativeLayout>
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:layout_marginTop="65dp"-->
+        <!--android:alpha="0.2"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--android:background="@drawable/layout_roundedcorner"-->
+        <!--></RelativeLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingRight="40dp"
             android:paddingLeft="40dp"
             android:id="@+id/login_details"
@@ -43,8 +43,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/user_email_wrap"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -107,41 +106,46 @@
 
         </RelativeLayout>
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_fb_login_btn"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:layout_below="@id/login_details"
+            android:id="@+id/fb_login"
+            />
+
+
+
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sedan_car"
+            android:baselineAlignBottom="true"
+
+            android:id="@+id/moving_car"/>
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:baselineAlignBottom="true"
+            android:layout_alignBottom="@id/moving_car"
+            android:adjustViewBounds="true"
+            android:src="@drawable/checker"
+            android:id="@+id/checker"
+            android:layout_below="@id/moving_car"
+            />
+
 
 
     </RelativeLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:background="@drawable/ic_fb_login_btn"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        />
 
-
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_sedan_car"
-        android:baselineAlignBottom="true"
-        android:layout_gravity="bottom"
-        android:id="@+id/moving_car"/>
-
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/checker"
-        android:baselineAlignBottom="true"
-        android:layout_gravity="bottom"
-        android:paddingBottom="50dp"
-        android:id="@+id/checker"/>
 
     <include layout="@layout/progress_bar"
         android:id="@+id/pb_loading"

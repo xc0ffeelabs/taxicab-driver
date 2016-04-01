@@ -91,6 +91,17 @@ public class RideRequestActionReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
         } else if (AUTO_REMOVE_NOTIFCATION_ACTION.equals(action)) {
+            //perform deny
+            try {
+                Log.d("Debug", "Request timeout TripId "+ tripId);
+                ParseQuery tripQ = ParseQuery.getQuery("Trip");
+                ParseObject trip = tripQ.get(tripId);
+                trip.put("status", "timeout");
+                trip.put("state", "trip-request-timed-out");
+                trip.saveInBackground();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //cancel ride request
             NotificationManager mNotificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
