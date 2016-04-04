@@ -107,15 +107,15 @@
 
         </RelativeLayout>
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_fb_login_btn"
-            android:layout_marginTop="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/login_details"
-            android:id="@+id/fb_login"
-            />
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/ic_fb_login_btn"-->
+            <!--android:layout_marginTop="50dp"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_below="@id/login_details"-->
+            <!--android:id="@+id/fb_login"-->
+            <!--/>-->
 
 
 

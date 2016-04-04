@@ -34,41 +34,44 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".activities.TaxiCabDriver"
+        <activity
+            android:name=".activities.TaxiCabDriver"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SignInActivity"
+        <activity
+            android:name=".activities.SignInActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SignUpActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MapActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyA6K93u9V37hUZFiT49NLe6UdqhAafro1Y" />
 
-            android:value="AIzaSyA6K93u9V37hUZFiT49NLe6UdqhAafro1Y"/>
-
-            <!--android:value="AIzaSyDS4GAwSpVgPOQpDiTwNxeSSpMotTP-9WQ" />-->
+        <!-- android:value="AIzaSyDS4GAwSpVgPOQpDiTwNxeSSpMotTP-9WQ" /> -->
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
             android:value="id:960181148606" />
 
         <service android:name=".services.LocationService" />
         <service android:name="com.parse.PushService" />
-        <service android:name=".services.CreateNotification"/>
+        <service android:name=".services.CreateNotification" />
 
         <receiver
             android:name=".services.DriverNotificationReceiver"
@@ -101,7 +104,8 @@
             </intent-filter>
         </receiver>
 
-
+        <activity android:name=".activities.SettingsActivity" >
+        </activity>
     </application>
 
 </manifest>

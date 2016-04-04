@@ -110,5 +110,8 @@ public class StateManager {
         return null;
     }
 
+    public void resetCurrentState() {
+        mCurrentState = null;
+    }
 
 }

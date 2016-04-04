@@ -89,10 +89,10 @@ public class EnrouteCustomerState implements State {
 
     private void initialize() {
 
-//        if (mActivity.isDebugMode()) {
+        if (mActivity.isDebugMode()) {
             /* TODO: Remove this in final app */
             mActivity.stopService(new Intent(mActivity, LocationService.class));
-//        }
+        }
 
 
 
@@ -183,15 +183,16 @@ public class EnrouteCustomerState implements State {
         showRoute();
 
         /* TODO: Remove this for final app */
-        mRefreshRequested = true;
-        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
-        new NavigateDriverToUserStub(mDriverLocation, mUserLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
-            @Override
-            public void onDestinationReached() {
+        if (mActivity.isDebugMode()) {
+            mRefreshRequested = true;
+            mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
+            new NavigateDriverToUserStub(mDriverLocation, mUserLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
+                @Override
+                public void onDestinationReached() {
                     moveToDestState();
-            }
-        }).run();
-
+                }
+            }).run();
+        }
     }
 
     private void updateTripPickup() {

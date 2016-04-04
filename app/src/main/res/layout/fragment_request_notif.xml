@@ -1,36 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/profileImage"/>
-
+    android:layout_height="wrap_content"
+    >
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@id/profileImage"
-        android:text="New request for ride. Can you pick the user?"
-        android:id="@+id/notificationText"/>
-
-    <Button
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Accept"
-        android:id="@+id/acceptBtn"
-        android:layout_below="@id/notificationText"
-        android:layout_alignLeft="@id/notificationText"/>
+        android:id="@+id/frgTitle"
+        android:padding="10dp"
+        android:text="RIDE REQUEST"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimaryDark"/>
 
-    <Button
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Deny"
-        android:id="@+id/denyBtn"
-        android:layout_below="@id/notificationText"
-        android:layout_alignRight="@id/notificationText"/>
+        android:layout_below="@id/frgTitle"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/profile_avatar"
+            android:id="@+id/profileImage"/>
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/profileImage"
+            android:text="New request for ride. Can you pick the user?"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/notificationText"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/notificationText"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accept"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/white"
+                android:layout_margin="5dp"
+                android:id="@+id/acceptBtn"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deny"
+                android:background="@drawable/secondary_button"
+                android:textColor="@color/black"
+                android:layout_margin="5dp"
+                android:id="@+id/denyBtn"
+                android:layout_toRightOf="@id/acceptBtn"/>
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

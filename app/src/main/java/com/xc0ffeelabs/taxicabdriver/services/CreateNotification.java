@@ -147,7 +147,7 @@ public class CreateNotification extends IntentService {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_chariot_logo_9)
                 .setLargeIcon(image)
-                .setColor(getResources().getColor(R.color.colorPrimary))
+                .setColor(getResources().getColor(R.color.colorAccent))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                 .setContentTitle("Ride request")
                 .setContentText("Request for ride")

@@ -1,14 +1,17 @@
 package com.xc0ffeelabs.taxicabdriver.services;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by skammila on 3/13/16.
@@ -46,7 +49,7 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
                 while (itr.hasNext()) {
                     String key = (String) itr.next();
                     String value = json.getString(key);
-                    JSONObject valJson = new JSONObject(value);
+
                     Log.d(TAG, "..." + key + " => " + value);
                     // Extract custom push data
                     if (key.equals("customdata")) {
@@ -75,55 +78,27 @@ public class DriverNotificationReceiver  extends BroadcastReceiver {
     private void createNotification(Context context, String datavalue) throws JSONException {
 
 
-//        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//        List<ActivityManager.RunningTaskInfo> services = activityManager
-//                .getRunningTasks(Integer.MAX_VALUE);
-//
-//        if (services.get(0).topActivity.getPackageName().toString()
-//                .equalsIgnoreCase(context.getPackageName().toString())) {
-//            //App is active. Launch alert message
-//            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
-//            Intent intent = new Intent(DriverNotificationReceiver.RIDE_REQUEST_LAUNCH_MAP);
-//            intent.putExtra("tripId", datavalue.getString("tripId"));
-//            intent.putExtra("tripUserId", datavalue.getString("userId"));
-//            broadcastManager.sendBroadcast(intent);
-//            return;
-//        }
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> services = activityManager
+                .getRunningTasks(Integer.MAX_VALUE);
+        JSONObject valJson = new JSONObject(datavalue);
 
-        //destination
-//        User user = null;
-//        String locationAddress = null;
-//        String userName = null;
-//        String message = "User requesting for ride. Can you take this ride?";
-//        try {
-//            user = (User)ParseUser.getQuery().include("destLocation").get(datavalue.getString("userId"));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        if (user != null) {
-////            try {
-////                user.getDestLocation().fetchIfNeeded();
-////            } catch (ParseException e) {
-////                e.printStackTrace();
-////            }
-//            locationAddress = user.getDestLocation().getText();
-//            userName = user.getName();
-//        }
-//
-//        if (locationAddress != null && userName != null) {
-//            message = userName + " is requesting for a ride to " + locationAddress + ". Can you pick " + locationAddress + "?";
-//        }
+        if (services.get(0).topActivity.getPackageName().toString()
+                .equalsIgnoreCase(context.getPackageName().toString())) {
+            //App is active. Launch alert message
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(context);
+            Intent intent = new Intent(DriverNotificationReceiver.RIDE_REQUEST_LAUNCH_MAP);
+            intent.putExtra("tripId", valJson.getString("tripId"));
+            intent.putExtra("tripUserId", valJson.getString("userId"));
+            broadcastManager.sendBroadcast(intent);
+            return;
+        }
 
-//        CreateNotification notif = new CreateNotification();
+        //create notification
         Intent it = new Intent(context, CreateNotification.class);
-//        it.putExtra("userId", datavalue.getString("userId"));
         it.putExtra("dataValue", datavalue);
         context.startService(it);
 
-
-
-
-//        }
     }
 
 

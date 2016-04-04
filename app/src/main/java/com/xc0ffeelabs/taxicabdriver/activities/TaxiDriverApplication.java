@@ -5,7 +5,6 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.interceptors.ParseLogInterceptor;
 import com.securepreferences.SecurePreferences;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Location;
@@ -56,7 +55,7 @@ public class TaxiDriverApplication extends Application {
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(APP_ID) // should correspond to APP_ID env variable
-                .addNetworkInterceptor(new ParseLogInterceptor())
+//                .addNetworkInterceptor(new ParseLogInterceptor())
                 .server(PARSE_URL).build());
         ParseInstallation.getCurrentInstallation().saveInBackground();
 

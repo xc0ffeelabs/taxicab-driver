@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -91,8 +92,10 @@ public class EnrouteDestinationState implements State {
 
     private void initialize() {
 
-        /* TODO: Remove this in final app */
-        mActivity.stopService(new Intent(mActivity, LocationService.class));
+        if (mActivity.isDebugMode()) {
+            /* TODO: Remove this in final app */
+            mActivity.stopService(new Intent(mActivity, LocationService.class));
+        }
 
         //update driver state
 //        Driver  driver = (Driver) ParseUser.getCurrentUser();
@@ -145,20 +148,25 @@ public class EnrouteDestinationState implements State {
     private void addDriverMarker() {
         //TODO Uncomment in final app
 
-//        Location location = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
-//        if (location != null) {
-//            mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
-//
-//        } else {
-//            throw new IllegalStateException("Driver location not found while preparing directions map");
-//        }
+        if (!mActivity.isDebugMode()) {
+            android.location.Location location = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
+            if (location != null) {
+                mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
 
-        /*TODO Remove for final APP    */
-        ParseGeoPoint pnt = mDriver.getParseGeoPoint("currentLocation");
-        mDriverLocation = new LatLng(pnt.getLatitude(), pnt.getLongitude());
-        mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(mDriverLocation));
+            } else {
+                throw new IllegalStateException("Driver location not found while preparing directions map");
+            }
 
+        }
+
+        if (mActivity.isDebugMode()) {
+            /*TODO Remove for final APP    */
+            ParseGeoPoint pnt = mDriver.getParseGeoPoint("currentLocation");
+            mDriverLocation = new LatLng(pnt.getLatitude(), pnt.getLongitude());
+            mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(mDriverLocation));
+
+        }
     }
 
     private void addDestinationMarker() {
@@ -227,15 +235,17 @@ public class EnrouteDestinationState implements State {
         mMap.animateCamera(cu);
         showRoute();
 
-        /* TODO: Remove this for final app */
-        mRefreshRequested = true;
-        mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
-        new NavigateDriverToUserStub(mDriverLocation, mDstLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
-            @Override
-            public void onDestinationReached() {
-                moveToDestState();
-            }
-        }).run();
+        if (mActivity.isDebugMode()) {
+            /* TODO: Remove this for final app */
+            mRefreshRequested = true;
+            mHandler.sendEmptyMessage(MSG_REFRESH_LOCATION);
+            new NavigateDriverToUserStub(mDriverLocation, mDstLocation, mDriver, new NavigateDriverToUserStub.ToReached() {
+                @Override
+                public void onDestinationReached() {
+                    moveToDestState();
+                }
+            }).run();
+        }
 
 
     }

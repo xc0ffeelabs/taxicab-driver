@@ -53,6 +53,10 @@ public class ActiveState implements State {
 
     private void initialize() {
 
+        //start location update service
+        Intent intent = new Intent(mActivity, LocationService.class);
+        mActivity.startService(intent);
+
         //update driver state
         mDriver.put(Driver.STATE, StateManager.States.Active.toString());
 
@@ -72,8 +76,7 @@ public class ActiveState implements State {
             mDriver.saveInBackground();
         }
 
-        Intent intent = new Intent(mActivity, LocationService.class);
-        mActivity.startService(intent);
+
     }
 
 
@@ -83,10 +86,10 @@ public class ActiveState implements State {
         if (mMarker != null) {
             mMarker.remove();
         }
-//        if(mActivity.isDebugMode()) {
+        if(mActivity.isDebugMode()) {
             /* TODO: Remove this in final app */
             mActivity.stopService(new Intent(mActivity, LocationService.class));
-//        }
+        }
 
     }
 }

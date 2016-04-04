@@ -27,17 +27,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.fragments.MapsFragment;
 import com.xc0ffeelabs.taxicabdriver.fragments.NotificationDialog;
-import com.xc0ffeelabs.taxicabdriver.fragments.SettingsFragment;
 import com.xc0ffeelabs.taxicabdriver.models.Driver;
 import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.services.DriverNotificationReceiver;
+import com.xc0ffeelabs.taxicabdriver.services.TripStates;
 import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 import butterknife.Bind;
@@ -75,7 +77,8 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     private BroadcastReceiver rideRequstreceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            showRequestNotificationFragment();
+            setupTripInfo(intent);
+            showRequestNotificationFragment(intent);
         }
     };
 
@@ -122,6 +125,7 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
         if (mIsMapReady) {
             initiateDriverState();
         }
+        setupDebugState();
         setupTripInfo(getIntent());
     }
 
@@ -232,8 +236,11 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_settings) {
             //show settings fragment
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fmMap, new SettingsFragment()).commit();
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.fmMap, new SettingsFragment()).commit();
+            Intent settings = new Intent(this, SettingsActivity.class);
+            startActivity(settings);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -242,10 +249,13 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     }
 
     private void logout() {
+        mDriver.put("state", StateManager.States.Inactive.toString());
+        mDriver.saveInBackground();
         TaxiDriverApplication.getAccountManager().logoutUser();
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        StateManager.getInstance().resetCurrentState();
         finish();
     }
 
@@ -353,13 +363,48 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
     }
 
 
-    private void showRequestNotificationFragment() {
+    private void showRequestNotificationFragment(Intent intent) {
         FragmentManager fm = getSupportFragmentManager();
-        NotificationDialog rideRequest = NotificationDialog.newInstance("Title");
+
+        String tripId = intent.getStringExtra("tripId");
+        NotificationDialog rideRequest = NotificationDialog.newInstance(mTripUser, tripId);
         rideRequest.show(fm, "fragment_edit_name");
     }
 
     public boolean isDebugMode() {
         return debugMode;
     }
+
+    public void onAccept(String tripId) {
+        ParseObject trip = null;
+        try {
+            trip = ParseQuery.getQuery("Trip").get(tripId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (trip == null) {
+            Log.e("Error", "Trip is null");
+            return;
+        }
+        trip.put("status", "confirmed");
+        trip.put("state", TripStates.GOING_TO_PICKUP);
+        trip.saveInBackground();
+
+        ParseUser driver = ParseUser.getCurrentUser();
+        driver.put(Driver.STATE, StateManager.States.EnrouteCustomer.toString());
+        driver.put("driver_currentTripId", tripId);
+        driver.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Intent mapsIntent = new Intent(getApplicationContext(), MapActivity.class);
+                    mapsIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(mapsIntent);
+                } else {
+                    Log.d("AcceptRequestReceiver", "e = " + e.getMessage());
+                }
+            }
+        });
+    }
+
 }
