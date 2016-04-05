@@ -19,8 +19,13 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.xc0ffeelabs.taxicabdriver.Manifest;
 import com.xc0ffeelabs.taxicabdriver.R;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+@RuntimePermissions
 public class MapsFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -88,17 +93,24 @@ public class MapsFragment extends Fragment implements
             Toast.makeText(getActivity(), "Map failed to load!", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            getMyLocation();
+            MapsFragmentPermissionsDispatcher.getMyLocationWithCheck(this);
         }
     }
 
-    private void getMyLocation() {
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+    public void getMyLocation() {
         try {
             mMap.setMyLocationEnabled(true);
             setupApiClient();
         } catch (SecurityException e) {
             throw e;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MapsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     private void setupApiClient() {
