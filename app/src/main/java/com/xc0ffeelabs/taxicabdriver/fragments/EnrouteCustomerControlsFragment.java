@@ -35,12 +35,12 @@ public class EnrouteCustomerControlsFragment extends ControlsFragment {
 
     @Override
     public void updateControlText() {
-
         //Action available for EnrouteCustomer is 'Reached Customer'
         mEnrouteCustomerControlsFragment.setPrimaryButtonText("Reached Customer?");
         //current status is active.
         mEnrouteCustomerControlsFragment.setStatusText("Go pickup customer...");
-        showContactCard(user.getName(), user.getDestLocation().getText(), user.getProfileImage());
+        showContactCard(user.getName(), user.getDestLocation() == null ? null :
+                user.getDestLocation().getText(), user.getProfileImage());
     }
 
     public void showContactCard(String name, String location, String imageUrl) {
