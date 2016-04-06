@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/profileImage"
+            android:layout_below="@id/notificationText"
             android:paddingTop="10dp"
             android:paddingBottom="5dp">
             <Button

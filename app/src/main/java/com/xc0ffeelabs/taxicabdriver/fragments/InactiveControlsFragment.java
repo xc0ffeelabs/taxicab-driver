@@ -29,6 +29,6 @@ public class InactiveControlsFragment extends ControlsFragment {
         //Action available for inactive state is Active
         mInactiveControlsFragment.setPrimaryButtonText("Active");
         //current status is inactive
-        mInactiveControlsFragment.setStatusText("Go Active to get rides...");
+        mInactiveControlsFragment.setStatusText("Go Active");
     }
 }

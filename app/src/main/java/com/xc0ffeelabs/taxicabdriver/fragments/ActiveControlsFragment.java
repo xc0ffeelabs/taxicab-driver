@@ -32,7 +32,7 @@ public class ActiveControlsFragment extends ControlsFragment {
         //Action available for active state is Inactive
         mActiveControlsFragment.setPrimaryButtonText("Go Inactive");
         //current status is active.
-        mActiveControlsFragment.setStatusText("You are in queue...");
+        mActiveControlsFragment.setStatusText("Waiting for pickup request.");
     }
 
     @Override

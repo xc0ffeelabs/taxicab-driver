@@ -41,7 +41,7 @@ public class EnrouteCustomerControlsFragment extends ControlsFragment {
         //Action available for EnrouteCustomer is 'Reached Customer'
         mEnrouteCustomerControlsFragment.setPrimaryButtonText("Reached Customer?");
         //current status is active.
-        mEnrouteCustomerControlsFragment.setStatusText("Go pickup customer...");
+        mEnrouteCustomerControlsFragment.setStatusText("Enroute customer");
         showContactCard(user.getName(), user.getPickupLocation().getText(), user.getDestLocation() == null ? null :
                 user.getDestLocation().getText(), user.getProfileImage(), user.getPhone());
 

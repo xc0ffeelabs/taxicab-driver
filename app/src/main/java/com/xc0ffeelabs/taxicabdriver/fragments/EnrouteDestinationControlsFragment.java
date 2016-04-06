@@ -29,7 +29,7 @@ public class EnrouteDestinationControlsFragment extends ControlsFragment {
         //Action available for EnrouteCustomer is 'Reached Customer'
         mEnrouteDestinationControlsFragment.setPrimaryButtonText("Reached Destination?");
         //current status is active.
-        mEnrouteDestinationControlsFragment.setStatusText("Start driving to destination");
+        mEnrouteDestinationControlsFragment.setStatusText("Enroute destination");
     }
 
     //    @Override

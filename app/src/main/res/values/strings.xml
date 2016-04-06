@@ -32,13 +32,13 @@
     <string name="logout_msg">Are you sure to logout?</string>
     <string name="logout">Logout</string>
     <string name="cancel">Cancel</string>
-    <string name="activeStatusText">You are in queue</string>
-    <string name="inactiveStatus">Go Active to get rides...</string>
+    <string name="activeStatusText">Waiting for pickup request</string>
+    <string name="inactiveStatus">Go Active</string>
     <string name="inactiveButton">Go Inactive</string>
     <string name="activeButton">Go Active</string>
     <string name="reachedCustomerButton">Reached Customer?</string>
-    <string name="goPickupCustomer">Go pickup customer</string>
-    <string name="goDestination">Start driving to destination</string>
+    <string name="goPickupCustomer">Enroute customer</string>
+    <string name="goDestination">Enroute destination</string>
     <string name="tripCompleteButton">Reached Destination?</string>
     <string name="driver_arrived">You are at pickup location.</string>
     <string name="driver_arrived_text">You reached user pickup loation. Look for User.</string>

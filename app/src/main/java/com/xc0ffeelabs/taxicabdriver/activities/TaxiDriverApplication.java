@@ -15,14 +15,14 @@ import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 public class TaxiDriverApplication extends Application {
 
-    private static final String APP_ID = "gotaxi";
-    private static final String PARSE_URL = "https://gotaxi.herokuapp.com/parse/";
+//    private static final String APP_ID = "gotaxi";
+//    private static final String PARSE_URL = "https://gotaxi.herokuapp.com/parse/";
 
 //    private static final String APP_ID = "chariottaxi";
 //    private static final String PARSE_URL = "https://chariottaxi.herokuapp.com/parse/";
 
-//    private static final String APP_ID = "chariotapp";
-//    private static final String PARSE_URL = "https://chariotapp.herokuapp.com/parse/";
+    private static final String APP_ID = "chariotapp";
+    private static final String PARSE_URL = "https://chariotapp.herokuapp.com/parse/";
     private static TaxiDriverApplication mApp;
 
     private SecurePreferences mSecurePrefs;
