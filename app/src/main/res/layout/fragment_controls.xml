@@ -21,15 +21,14 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:id="@+id/userImage"
-            android:src="@drawable/profile_avatar"
-            android:layout_marginLeft="20dp"/>
+            android:src="@drawable/profile_avatar"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingRight="30dp"
             android:layout_alignParentTop="true"
-            android:paddingTop="10dp"
             android:paddingLeft="10dp"
+            android:textColor="@color/black"
             android:id="@+id/userName"
             android:layout_toRightOf="@id/userImage"
             android:fontFamily="sans-serif-light"
@@ -40,29 +39,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingRight="30dp"
-            android:id="@+id/destLoc"
+            android:paddingLeft="10dp"
+            android:lines="1"
+            android:id="@+id/pickupLoc"
             android:layout_toRightOf="@id/userImage"
             android:layout_below="@id/userName"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/destLoc"
+            android:lines="1"
+            android:layout_toRightOf="@id/userImage"
+            android:layout_below="@id/pickupLoc"
             />
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:id="@+id/userPhoneCall"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/phone"/>
+            android:src="@drawable/ic_phone_green"/>
     </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/activeStatusText"
         android:background="@color/colorPrimary"
         android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-light"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif"
         android:elevation="5dp"
         android:id="@+id/tvStatus"/>
 

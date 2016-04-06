@@ -1,31 +1,42 @@
 package com.xc0ffeelabs.taxicabdriver.fragments;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.squareup.picasso.Picasso;
 import com.xc0ffeelabs.taxicabdriver.R;
 import com.xc0ffeelabs.taxicabdriver.activities.MapActivity;
+import com.xc0ffeelabs.taxicabdriver.models.Trip;
 import com.xc0ffeelabs.taxicabdriver.models.User;
 import com.xc0ffeelabs.taxicabdriver.utils.CircleTransform;
+import com.xc0ffeelabs.taxicabdriver.utils.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by skammila on 3/21/16.
@@ -35,7 +46,7 @@ public class NotificationDialog extends DialogFragment{
     TextView notificationText;
 
     @Bind(R.id.profileImage)
-    ImageView profileImage;
+    CircleImageView profileImage;
 
     @Bind(R.id.acceptBtn)Button acceptBtn;
 
@@ -43,6 +54,8 @@ public class NotificationDialog extends DialogFragment{
 
     User tripUser;
     String tripId;
+
+    private static String REMOVE_DIALOG_ACTION = "com.xc0ffeelabs.taxicabdriver.REMOVE_DIALOG_ACTION";
 
     public NotificationDialog() {
 
@@ -52,6 +65,7 @@ public class NotificationDialog extends DialogFragment{
         NotificationDialog frag = new NotificationDialog();
         frag.setTripUser(tripuser);
         frag.setTripId(tripId);
+
 //        Bundle args = new Bundle();
 //        args.putString("profileImage", profileImage);
 //        args.putString("text", text);
@@ -69,7 +83,7 @@ public class NotificationDialog extends DialogFragment{
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MapActivity)getActivity()).onAccept(getTripId());
+                ((MapActivity) getActivity()).onAccept(getTripId());
                 getDialog().dismiss();
             }
         });
@@ -78,8 +92,42 @@ public class NotificationDialog extends DialogFragment{
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
+                //perform deny
+                try {
+                    Log.d("NotificationDialog", "Deny TripId " + tripId);
+                    ParseQuery tripQ = ParseQuery.getQuery("Trip");
+                    tripQ.getInBackground(tripId, new GetCallback() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if (e == null) {
+                                handleDone(object);
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void done(Object o, Throwable throwable) {
+                            if (throwable == null) {
+                                handleDone(o);
+                            } else {
+                                throwable.printStackTrace();
+                            }
+                        }
+
+                        private void handleDone(Object obj) {
+                            Trip trip = (Trip) obj;
+                            trip.put("status", "driver-denied");
+                            trip.put("state", "driver-denied-trip-request");
+                            trip.saveInBackground();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+        setAutocancelAlarm(getContext());
         return view;
     }
 
@@ -94,22 +142,12 @@ public class NotificationDialog extends DialogFragment{
     private void createNotification() {
         String name = tripUser.getName() != null ? tripUser.getName() : "User";
 
-        name = firstLetterUppercase(name);
+        name = Utils.firstLetterUppercase(name);
 
         StyleSpan bold1 = new StyleSpan(Typeface.BOLD);
         StyleSpan bold2 = new StyleSpan(Typeface.BOLD);
         StyleSpan bold3 = new StyleSpan(Typeface.BOLD);
         StyleSpan bold4 = new StyleSpan(Typeface.BOLD);
-
-//        ForegroundColorSpan redColorSpan1 = new ForegroundColorSpan(
-//                getResources().getColor(R.color.colorAccent));
-
-//        ForegroundColorSpan greenColorSpan1 = new ForegroundColorSpan(
-//                getResources().getColor(R.color.greenDarkMaterial));
-//
-//        ForegroundColorSpan greenColorSpan2 = new ForegroundColorSpan(
-//                getResources().getColor(R.color.greenDarkMaterial));
-
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(name);
 
@@ -144,8 +182,6 @@ public class NotificationDialog extends DialogFragment{
         }
         String msg4 = "\nCan you pick " + name;
         ssb.append(msg4);
-//        ForegroundColorSpan redColorSpan2 = new ForegroundColorSpan(
-//                getResources().getColor(R.color.colorAccent));
         ssb.setSpan(bold4, ssb.length() - name.length(), ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         ssb.append("?");
@@ -157,11 +193,11 @@ public class NotificationDialog extends DialogFragment{
             Picasso.with(getContext()).load(profileImageUrl).transform(new CircleTransform()).into(profileImage);
         }
     }
-    private String firstLetterUppercase(String inp) {
-        StringBuilder rackingSystemSb = new StringBuilder(inp.toLowerCase());
-        rackingSystemSb.setCharAt(0, Character.toUpperCase(rackingSystemSb.charAt(0)));
-        return rackingSystemSb.toString();
-    }
+//    private String firstLetterUppercase(String inp) {
+//        StringBuilder rackingSystemSb = new StringBuilder(inp.toLowerCase());
+//        rackingSystemSb.setCharAt(0, Character.toUpperCase(rackingSystemSb.charAt(0)));
+//        return rackingSystemSb.toString();
+//    }
 
     @NonNull
     @Override
@@ -197,5 +233,16 @@ public class NotificationDialog extends DialogFragment{
 
     public void setTripId(String tripId) {
         this.tripId = tripId;
+    }
+
+    //Function to set alarm for auto cancel
+    public static void setAutocancelAlarm(Context context) {
+        AlarmManager alarmMgr =
+                (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(REMOVE_DIALOG_ACTION);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() +
+                        30 * 1000,
+                pendingIntent);
     }
 }

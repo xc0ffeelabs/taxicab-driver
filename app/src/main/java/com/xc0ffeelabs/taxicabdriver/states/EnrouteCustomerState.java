@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -218,15 +219,16 @@ public class EnrouteCustomerState implements State {
     }
 
     private void showDriverArrived() {
-        new AlertDialog.Builder(mActivity)
-                .setTitle(R.string.driver_arrived)
-                .setMessage(R.string.driver_arrived_text)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        changeState();
-                    }
-                }).create().show();
+        Toast.makeText(mActivity, mActivity.getResources().getText(R.string.driver_arrived_text), Toast.LENGTH_LONG).show();
+
+//        new AlertDialog.Builder(mActivity)
+//                .setTitle(R.string.driver_arrived)
+//                .setMessage(R.string.driver_arrived_text)
+//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                }).create().show();
     }
 
     private void showRoute() {
@@ -242,7 +244,7 @@ public class EnrouteCustomerState implements State {
         if (doc != null) {
             ArrayList<LatLng> directionPoint = GMapV2Direction.getDirection(doc);
             PolylineOptions rectLine = new PolylineOptions().width(10).color(
-                    Color.BLUE);
+                    Color.parseColor("#4285f4"));
 
             for (int i = 0; i < directionPoint.size(); i++) {
                 rectLine.add(directionPoint.get(i));

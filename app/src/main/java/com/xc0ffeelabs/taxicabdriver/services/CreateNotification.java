@@ -58,25 +58,29 @@ public class CreateNotification extends IntentService {
                     try {
                         text = "";
                         userProfileImage = user.getProfileImage();
-//                        if (userProfileImage == null || userProfileImage.length() == 0) {
-//                            userProfileImage = "http://salescafe.us/sites/default/files/styles/50x50/public/pictures/M3%20avatar.png";
-//                        }
-//                        URL url = new URL(userProfileImage);
-//                        image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                         String name = user.getName();
                         text += name + " needs a ride. ";
-                        user.getPickupLocation().fetchIfNeeded();
-                        String pickupLocation = user.getPickupLocation().getText();
-                        if (pickupLocation != null && pickupLocation.length() > 0) {
-                            text += "\nPICKUP: " + pickupLocation + " ";
+                        if (user.getPickupLocation() != null) {
+                            user.getPickupLocation().fetchIfNeeded();
+                            String pickupLocation = user.getPickupLocation().getText();
+                            if (pickupLocation != null && pickupLocation.length() > 0) {
+                                text += "\nPICKUP: " + pickupLocation + " ";
+                            }
+                            Log.i("CreateNotification", name + "  pickup " + pickupLocation);
                         }
-                        user.getDestLocation().fetchIfNeeded();
-                        String destLocation = user.getDestLocation().getText();
-                        if (destLocation != null && destLocation.length() > 0) {
-                            text += "\nDESTINATION: " + destLocation + " ";
+
+                        if (user.getDestLocation() != null) {
+                            user.getDestLocation().fetchIfNeeded();
+                            String destLocation = user.getDestLocation().getText();
+                            if (destLocation != null && destLocation.length() > 0) {
+                                text += "\nDESTINATION: " + destLocation + " ";
+                            }
+
+                            Log.i("CreateNotification", name + " dest " + destLocation);
                         }
+
                         text += "\nCan you pick " + name + "?";
-                        Log.i("CreateNotification", name + "  pickup " + pickupLocation + " dest " + destLocation);
+
                     } catch (ParseException e1) {
                         e1.printStackTrace();
                     }
@@ -87,8 +91,6 @@ public class CreateNotification extends IntentService {
                 dowloadProfileImage(userProfileImage);
             }
         });
-
-
 
     }
 
@@ -145,10 +147,11 @@ public class CreateNotification extends IntentService {
 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_chariot_logo_9)
+                .setSmallIcon(R.drawable.ic_stat_chariot_logo_notification_icon)
                 .setLargeIcon(image)
                 .setColor(getResources().getColor(R.color.colorAccent))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setWhen(System.currentTimeMillis())
                 .setContentTitle("Ride request")
                 .setContentText("Request for ride")
                 .setPriority(Notification.PRIORITY_MAX)

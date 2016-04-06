@@ -155,10 +155,18 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
             case R.id.nd_logout:
                 logoutUserConf();
                 break;
+            case R.id.history:
+                launchHistory();
+                break;
             default:
                 throw new UnsupportedOperationException("Invalid menu item clicked");
         }
         mDrawer.closeDrawers();
+    }
+
+    private void launchHistory() {
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
     }
 
     private void logoutUserConf() {

@@ -13,7 +13,7 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimary"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -21,13 +21,12 @@
         android:layout_below="@id/frgTitle"
         android:padding="10dp">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-            android:src="@drawable/profile_avatar"
-            android:id="@+id/profileImage"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/profileImage"
+            android:src="@drawable/profile_avatar"/>
 
 
         <TextView
@@ -36,6 +35,7 @@
             android:layout_toRightOf="@id/profileImage"
             android:text="New request for ride. Can you pick the user?"
             android:layout_marginLeft="5dp"
+            android:textColor="@color/black"
             android:id="@+id/notificationText"/>
 
         <LinearLayout
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/notificationText"
+            android:layout_below="@id/profileImage"
             android:paddingTop="10dp"
             android:paddingBottom="5dp">
             <Button
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="Deny"
                 android:background="@drawable/secondary_button"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_margin="5dp"
                 android:id="@+id/denyBtn"
                 android:layout_toRightOf="@id/acceptBtn"/>

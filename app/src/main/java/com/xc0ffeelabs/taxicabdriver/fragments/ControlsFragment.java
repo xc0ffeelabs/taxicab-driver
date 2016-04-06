@@ -28,6 +28,8 @@ public class ControlsFragment extends Fragment {
     @Bind(R.id.contactCard) RelativeLayout contactCard;
     @Bind(R.id.userImage) ImageView userImage;
     @Bind(R.id.userName) TextView userName;
+    @Bind(R.id.userPhoneCall) ImageView phoneCall;
+    @Bind(R.id.pickupLoc) TextView pickupLoc;
     @Bind(R.id.destLoc) TextView destLoc;
 
     public void setControlsInteraction(ControlsInteraction listener) {

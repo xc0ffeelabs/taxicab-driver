@@ -1,6 +1,5 @@
 package com.xc0ffeelabs.taxicabdriver.states;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,8 +7,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -152,7 +151,7 @@ public class EnrouteDestinationState implements State {
             android.location.Location location = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
             if (location != null) {
                 mDriverLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(android.R.drawable.ic_delete)).position(mDriverLocation));
+                mMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin)).position(mDriverLocation));
 
             } else {
                 throw new IllegalStateException("Driver location not found while preparing directions map");
@@ -282,16 +281,17 @@ public class EnrouteDestinationState implements State {
     }
 
     private void showDestReached() {
-        new AlertDialog.Builder(mActivity)
-                .setTitle(R.string.destination_reached_title)
-                .setMessage(R.string.destination_reached_text)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        changeState();
-//                        notifyUser();
-                    }
-                }).create().show();
+
+        Toast.makeText(mActivity, mActivity.getResources().getText(R.string.destination_reached_text), Toast.LENGTH_LONG).show();
+
+//        new AlertDialog.Builder(mActivity)
+//                .setTitle(R.string.destination_reached_title)
+//                .setMessage(R.string.destination_reached_text)
+//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                }).create().show();
     }
 
     public  void notifyUser () {

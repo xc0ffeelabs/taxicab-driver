@@ -2,6 +2,7 @@ package com.xc0ffeelabs.taxicabdriver.models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -22,13 +23,21 @@ public class Trip extends ParseObject{
 
     }
 
-    public ParseUser getUser() {
-        return user;
+    public ParseUser getUser() throws ParseException {
+        return getParseUser("user").fetchIfNeeded();
     }
 
     public void setUser(ParseUser user) {
-        this.user = user;
+        put("user", user);
     }
+
+//    public ParseUser getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(ParseUser user) {
+//        this.user = user;
+//    }
 
     public String getStatus() {
         return getString(STATUS);
@@ -47,13 +56,21 @@ public class Trip extends ParseObject{
         put(Trip.STATE, state);
     }
 
-    public Driver getDriver() {
-        return driver;
+    public ParseUser getDriver() throws ParseException {
+        return getParseUser("driver").fetchIfNeeded();
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setDriver(ParseUser driver) {
+        put("driver", driver);
     }
+
+//    public Driver getDriver() {
+//        return driver;
+//    }
+//
+//    public void setDriver(Driver driver) {
+//        this.driver = driver;
+//    }
 
     public void setPickupLocation(LatLng location, final SaveCallback callback) {
         Location pnt = new Location();
