@@ -181,9 +181,13 @@ public class EnrouteDestinationState implements State {
                     if (mTripUser != null) {
                         try {
                             Location dstLocation = mTripUser.getDestLocation();
-                            dstLocation.fetchIfNeeded();
-                            if (dstLocation != null && dstLocation.getLatitude() != 0 && dstLocation.getLongitude() != 0) {
-                                mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
+                            if (dstLocation != null) {
+                                dstLocation.fetchIfNeeded();
+                                if (dstLocation.getLatitude() != 0 && dstLocation.getLongitude() != 0) {
+                                    mDstLocation = new LatLng(dstLocation.getLatitude(), dstLocation.getLongitude());
+                                } else {
+                                    mDstLocation = new LatLng(37.4810289, -122.1565179);
+                                }
                             } else {
                                 mDstLocation = new LatLng(37.4810289, -122.1565179);
                             }
