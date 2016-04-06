@@ -8,8 +8,8 @@ android {
         applicationId "com.xc0ffeelabs.taxicabdriver"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0_beta"
     }
     // This is handled for you by the 2.0+ Gradle Plugin
     aaptOptions {
@@ -43,6 +43,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-
-//    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
+    compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
 }

@@ -44,7 +44,7 @@ import com.xc0ffeelabs.taxicabdriver.states.StateManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
+import permissions.dispatcher.RuntimePermissions;
 
 public class MapActivity extends AppCompatActivity implements MapsFragment.MapReady{
 
@@ -414,5 +414,4 @@ public class MapActivity extends AppCompatActivity implements MapsFragment.MapRe
             }
         });
     }
-
 }
